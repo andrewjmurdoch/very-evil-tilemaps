@@ -1,0 +1,13 @@
+{
+    "name": "com.veryevildemons.veryeviltilemaps",
+    "version": "0.1.0",
+    "displayName": "Very Evil Tilemaps",
+    "description": "A package for importing LDtk tilemaps into the Unity game development engine",
+    "unity": "2021.3",
+    "author": 
+    {
+        "name": "Andrew Murdoch",
+        "email": "",
+        "url": ""
+    }
+}
