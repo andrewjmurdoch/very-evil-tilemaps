@@ -6,7 +6,7 @@ using UnityEngine.U2D;
 
 namespace VED.Tilemaps
 {
-    [CreateAssetMenu(fileName = "TilesetMapper", menuName = "VED/Tilemaps/TilsetMapper")]
+    [CreateAssetMenu(fileName = "TilesetMapper", menuName = "VED/Tilemaps/TilesetMapper")]
 
     public class TilesetMapper : ScriptableObject
     {
