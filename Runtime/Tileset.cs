@@ -18,6 +18,8 @@ namespace VED.Tilemaps
             int size = (int)((definition.PxWid / Consts.TILE_SIZE) * (definition.PxHei / Consts.TILE_SIZE));
             _tiles = new Tile[size];
 
+            if (definition.RelPath == null) return null;
+
             // get tileset
             int start = definition.RelPath.LastIndexOf('/') + 1;
             int end = definition.RelPath.LastIndexOf('.');
