@@ -24,6 +24,8 @@ namespace VED.Tilemaps
             string name = definition.RelPath.Substring(start, end - start);
             SpriteAtlas spriteAtlas = TilesetManager.Instance.TilesetMapper[name];
 
+            if (spriteAtlas == null) return null;
+
             // create tiles
             for (int i = 0; i < size; i++)
             {

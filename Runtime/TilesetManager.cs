@@ -18,7 +18,10 @@ namespace VED.Tilemaps
             _tilesets = new Dictionary<long, Tileset>();
             foreach (TilesetDefinition tilesetDefinition in definitions)
             {
-                _tilesets.Add(tilesetDefinition.Uid, new Tileset().Init(tilesetDefinition));
+                Tileset tileset = new Tileset().Init(tilesetDefinition);
+                if (tileset == null) continue;
+
+                _tilesets.Add(tilesetDefinition.Uid, tileset);
             }
         }
     }
