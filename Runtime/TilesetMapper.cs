@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
@@ -11,21 +9,21 @@ namespace VED.Tilemaps
     public class TilesetMapper : ScriptableObject
     {
         [SerializeField] private List<SpriteAtlas> _spriteAtlases = new List<SpriteAtlas>();
-        private Dictionary<string, SpriteAtlas> _spriteAtlasDictionary = new Dictionary<string, SpriteAtlas>();
+        private Dictionary<string, SpriteAtlas> _spriteAtlasDictionary = null;
 
         public SpriteAtlas this[string name]
         {
             get
             {
-                if (!_spriteAtlasDictionary.ContainsKey(name)) return null;
-                return _spriteAtlasDictionary[name];
+                if (_spriteAtlasDictionary == null) InitSpriteAtlasDictionary();
+                if (_spriteAtlasDictionary.TryGetValue(name, out SpriteAtlas spriteAtlas)) return spriteAtlas;
+                return null;
             }
         }
 
-#if UNITY_EDITOR
-        public void OnValidate()
+        public void InitSpriteAtlasDictionary()
         {
-            _spriteAtlasDictionary.Clear();
+            _spriteAtlasDictionary = new Dictionary<string, SpriteAtlas>();
             foreach (SpriteAtlas spriteAtlas in _spriteAtlases)
             {
                 if (spriteAtlas == null) continue;
@@ -34,6 +32,5 @@ namespace VED.Tilemaps
                 _spriteAtlasDictionary.Add(spriteAtlas.name, spriteAtlas);
             }
         }
-#endif
     }
 }
