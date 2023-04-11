@@ -17,6 +17,9 @@ namespace VED.Tilemaps
         public Dictionary<long, Tilelayer> Tilelayers => _tilelayers;
         protected Dictionary<long, Tilelayer> _tilelayers = new Dictionary<long, Tilelayer>();
 
+        public Dictionary<long, EntityLayer> EntityLayers => _entityLayers;
+        protected Dictionary<long, EntityLayer> _entityLayers = new Dictionary<long, EntityLayer>();
+
         public Vector2 Size => _size;
         protected Vector2 _size = Vector2.zero;
 
@@ -24,21 +27,23 @@ namespace VED.Tilemaps
         {
             _size = new Vector2(definition.PxWid / Consts.TILE_SIZE, definition.PxHei / Consts.TILE_SIZE);
 
-            InitLayers(definition);
+            InitTileLayers(definition);
+            InitEntityLayers(definition);
 
             return this;
         }
 
 
-        protected virtual void InitLayers(Level definition)
+        protected virtual void InitTileLayers(Level definition)
         {
-            // find all layers which are not autolayers/int layers/entity layers
+            // find all layers which are not entity layers
             List<LayerInstance> layerDefinitions = new List<LayerInstance>();
             for (int i = 0; i < definition.LayerInstances.Count; i++)
             {
-                if (definition.LayerInstances[i].Type == Consts.TILELAYER_TYPE)
+                if (definition.LayerInstances[i].Type != Consts.ENTITYLAYER_TYPE)
                 {
                     layerDefinitions.Add(definition.LayerInstances[i]);
+                    continue;
                 }
             }
 
@@ -51,6 +56,30 @@ namespace VED.Tilemaps
                 gameObject.transform.localPosition = Vector3.zero;
 
                 _tilelayers.Add(layerDefinitions[i].LayerDefUid, gameObject.AddComponent<Tilelayer>().Init(layerDefinitions[i], layerDefinitions.Count - i));
+            }
+        }
+
+        protected virtual void InitEntityLayers(Level definition)
+        {
+            // find all layers which are entity layers
+            List<LayerInstance> layerDefinitions = new List<LayerInstance>();
+            for (int i = 0; i < definition.LayerInstances.Count; i++)
+            {
+                if (definition.LayerInstances[i].Type == Consts.ENTITYLAYER_TYPE)
+                {
+                    layerDefinitions.Add(definition.LayerInstances[i]);
+                }
+            }
+
+            _entityLayers = new Dictionary<long, EntityLayer>();
+
+            for (int i = 0; i < layerDefinitions.Count; i++)
+            {
+                GameObject gameObject = new GameObject("EntityLayer: " + layerDefinitions[i].Identifier);
+                gameObject.transform.SetParent(transform);
+                gameObject.transform.localPosition = Vector3.zero;
+
+                _entityLayers.Add(layerDefinitions[i].LayerDefUid, gameObject.AddComponent<EntityLayer>().Init(layerDefinitions[i]));
             }
         }
 
