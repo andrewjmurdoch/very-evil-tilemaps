@@ -22,7 +22,7 @@ namespace VED.Tilemaps
                 int x = (int)definition.EntityInstances[i].Px[0] / Consts.TILE_SIZE;
                 int y = (int)definition.EntityInstances[i].Px[1] / Consts.TILE_SIZE;
 
-                Entity entityInstance = Instantiate(entityPrefab).Init(definition.EntityInstances[i]);
+                Entity entityInstance = Instantiate(entityPrefab).Init(definition.EntityInstances[i], definition.LevelId);
                 entityInstance.name = "Entity [" + x + ", " + y + "]: " + definition.EntityInstances[i].Identifier;
                 entityInstance.transform.SetParent(transform);
 
