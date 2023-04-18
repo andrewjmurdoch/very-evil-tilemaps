@@ -5,15 +5,15 @@ namespace VED.Tilemaps
 {
     public class EntityLayer : MonoBehaviour
     {
-        public List<Entity> Entities => _entities;
-        protected List<Entity> _entities = null;
+        public Dictionary<string, Entity> Entities => _entities;
+        protected Dictionary<string, Entity> _entities = null;
 
         [SerializeField] private bool _visible = false;
 
         public EntityLayer Init(LayerInstance definition)
         {
             // set up entities
-            _entities = new List<Entity>();
+            _entities = new Dictionary<string, Entity>();
             for (int i = 0; i < definition.EntityInstances.Count; i++)
             {
                 Entity entityPrefab = EntityManager.Instance.EntityMapper[definition.EntityInstances[i].Identifier];
@@ -29,7 +29,7 @@ namespace VED.Tilemaps
                 Vector2 offset = (Vector2.right + Vector2.down) * (1f / 2f);
                 entityInstance.transform.localPosition = new Vector2(x, -y) + offset;
 
-                _entities.Add(entityInstance);
+                _entities.Add(definition.EntityInstances[i].Iid, entityInstance);
             }
 
             return this;
@@ -39,7 +39,7 @@ namespace VED.Tilemaps
         private void OnValidate()
         {
             if (_entities == null) return;
-            foreach (Entity entity in _entities)
+            foreach (Entity entity in _entities.Values)
             {
                 entity.Visible = _visible;
             }
