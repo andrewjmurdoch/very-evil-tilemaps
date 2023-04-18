@@ -14,11 +14,11 @@ namespace VED.Tilemaps
             { 'w', new List<Tilelevel>() }
         };
 
-        public Dictionary<long, Tilelayer> Tilelayers => _tilelayers;
-        protected Dictionary<long, Tilelayer> _tilelayers = new Dictionary<long, Tilelayer>();
+        public Dictionary<string, Tilelayer> Tilelayers => _tilelayers;
+        protected Dictionary<string, Tilelayer> _tilelayers = new Dictionary<string, Tilelayer>();
 
-        public Dictionary<long, EntityLayer> EntityLayers => _entityLayers;
-        protected Dictionary<long, EntityLayer> _entityLayers = new Dictionary<long, EntityLayer>();
+        public Dictionary<string, EntityLayer> EntityLayers => _entityLayers;
+        protected Dictionary<string, EntityLayer> _entityLayers = new Dictionary<string, EntityLayer>();
 
         public Vector2 Size => _size;
         protected Vector2 _size = Vector2.zero;
@@ -47,7 +47,7 @@ namespace VED.Tilemaps
                 }
             }
 
-            _tilelayers = new Dictionary<long, Tilelayer>();
+            _tilelayers = new Dictionary<string, Tilelayer>();
 
             for (int i = 0; i < layerDefinitions.Count; i++)
             {
@@ -55,7 +55,7 @@ namespace VED.Tilemaps
                 gameObject.transform.SetParent(transform);
                 gameObject.transform.localPosition = Vector3.zero;
 
-                _tilelayers.Add(layerDefinitions[i].LayerDefUid, gameObject.AddComponent<Tilelayer>().Init(layerDefinitions[i], layerDefinitions.Count - i));
+                _tilelayers.Add(layerDefinitions[i].Iid, gameObject.AddComponent<Tilelayer>().Init(layerDefinitions[i], layerDefinitions.Count - i));
             }
         }
 
@@ -71,7 +71,7 @@ namespace VED.Tilemaps
                 }
             }
 
-            _entityLayers = new Dictionary<long, EntityLayer>();
+            _entityLayers = new Dictionary<string, EntityLayer>();
 
             for (int i = 0; i < layerDefinitions.Count; i++)
             {
@@ -79,7 +79,7 @@ namespace VED.Tilemaps
                 gameObject.transform.SetParent(transform);
                 gameObject.transform.localPosition = Vector3.zero;
 
-                _entityLayers.Add(layerDefinitions[i].LayerDefUid, gameObject.AddComponent<EntityLayer>().Init(layerDefinitions[i]));
+                _entityLayers.Add(layerDefinitions[i].Iid, gameObject.AddComponent<EntityLayer>().Init(layerDefinitions[i]));
             }
         }
 
