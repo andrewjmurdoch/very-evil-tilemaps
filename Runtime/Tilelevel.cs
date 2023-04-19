@@ -83,7 +83,7 @@ namespace VED.Tilemaps
                 gameObject.transform.SetParent(transform);
                 gameObject.transform.localPosition = Vector3.zero;
 
-                _entityLayers.Add(layerDefinitions[i].Iid, gameObject.AddComponent<EntityLayer>().Init(layerDefinitions[i]));
+                _entityLayers.Add(layerDefinitions[i].Iid, gameObject.AddComponent<EntityLayer>().Init(layerDefinitions[i], definition.Iid));
             }
         }
 

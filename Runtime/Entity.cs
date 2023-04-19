@@ -14,10 +14,10 @@ namespace VED.Tilemaps
             set { gameObject.SetActive(value);  }
         }
 
-        public long LevelID => _levelID;
-        private long _levelID;
+        public string LevelID => _levelID;
+        private string _levelID;
 
-        public virtual Entity Init(EntityInstance definition, long levelID)
+        public virtual Entity Init(EntityInstance definition, string levelID)
         {
             _levelID = levelID;
             Spawned?.Invoke(this);

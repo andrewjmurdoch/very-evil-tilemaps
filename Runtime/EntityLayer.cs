@@ -13,7 +13,7 @@ namespace VED.Tilemaps
 
         [SerializeField] private bool _visible = false;
 
-        public EntityLayer Init(LayerInstance definition)
+        public EntityLayer Init(LayerInstance definition, string levelID)
         {
             _id = definition.Iid;
 
@@ -27,7 +27,7 @@ namespace VED.Tilemaps
                 int x = (int)definition.EntityInstances[i].Px[0] / Consts.TILE_SIZE;
                 int y = (int)definition.EntityInstances[i].Px[1] / Consts.TILE_SIZE;
 
-                Entity entityInstance = Instantiate(entityPrefab).Init(definition.EntityInstances[i], definition.LevelId);
+                Entity entityInstance = Instantiate(entityPrefab).Init(definition.EntityInstances[i], levelID);
                 entityInstance.name = "Entity [" + x + ", " + y + "]: " + definition.EntityInstances[i].Identifier;
                 entityInstance.transform.SetParent(transform);
 

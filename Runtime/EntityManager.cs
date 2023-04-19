@@ -8,8 +8,8 @@ namespace VED.Tilemaps
         public EntityMapper EntityMapper => _entityMapper;
         private EntityMapper _entityMapper = null;
 
-        public Dictionary<long, List<Entity>> TilelevelEntities => _tilelevelEntities;
-        private Dictionary<long, List<Entity>> _tilelevelEntities = new Dictionary<long, List<Entity>>();
+        public Dictionary<string, List<Entity>> TilelevelEntities => _tilelevelEntities;
+        private Dictionary<string, List<Entity>> _tilelevelEntities = new Dictionary<string, List<Entity>>();
 
         public List<Entity> Entities => _entities;
         private List<Entity> _entities = new List<Entity>();
