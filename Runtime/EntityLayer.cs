@@ -5,6 +5,9 @@ namespace VED.Tilemaps
 {
     public class EntityLayer : MonoBehaviour
     {
+        public string ID => _id;
+        protected string _id = string.Empty;
+
         public Dictionary<string, Entity> Entities => _entities;
         protected Dictionary<string, Entity> _entities = null;
 
@@ -12,6 +15,8 @@ namespace VED.Tilemaps
 
         public EntityLayer Init(LayerInstance definition)
         {
+            _id = definition.Iid;
+
             // set up entities
             _entities = new Dictionary<string, Entity>();
             for (int i = 0; i < definition.EntityInstances.Count; i++)

@@ -3,19 +3,22 @@ using UnityEngine;
 
 namespace VED.Tilemaps
 {
-    public partial class Tilelevel : MonoBehaviour
+    public partial class TileLevel : MonoBehaviour
     {
-        public Dictionary<char, List<Tilelevel>> NeighbourTilelevels => _neighbourTilelevels;
-        protected Dictionary<char, List<Tilelevel>> _neighbourTilelevels = new Dictionary<char, List<Tilelevel>>()
+        public string ID => _id;
+        protected string _id = string.Empty;
+
+        public Dictionary<char, List<TileLevel>> NeighbourTileLevels => _neighbourTileLevels;
+        protected Dictionary<char, List<TileLevel>> _neighbourTileLevels = new Dictionary<char, List<TileLevel>>()
         {
-            { 'n', new List<Tilelevel>() },
-            { 'e', new List<Tilelevel>() },
-            { 's', new List<Tilelevel>() },
-            { 'w', new List<Tilelevel>() }
+            { 'n', new List<TileLevel>() },
+            { 'e', new List<TileLevel>() },
+            { 's', new List<TileLevel>() },
+            { 'w', new List<TileLevel>() }
         };
 
-        public Dictionary<string, Tilelayer> Tilelayers => _tilelayers;
-        protected Dictionary<string, Tilelayer> _tilelayers = new Dictionary<string, Tilelayer>();
+        public Dictionary<string, TileLayer> TileLayers => _tileLayers;
+        protected Dictionary<string, TileLayer> _tileLayers = new Dictionary<string, TileLayer>();
 
         public Dictionary<string, EntityLayer> EntityLayers => _entityLayers;
         protected Dictionary<string, EntityLayer> _entityLayers = new Dictionary<string, EntityLayer>();
@@ -23,8 +26,9 @@ namespace VED.Tilemaps
         public Vector2 Size => _size;
         protected Vector2 _size = Vector2.zero;
 
-        public Tilelevel Init(Level definition)
+        public TileLevel Init(Level definition)
         {
+            _id = definition.Iid;
             _size = new Vector2(definition.PxWid / Consts.TILE_SIZE, definition.PxHei / Consts.TILE_SIZE);
 
             InitTileLayers(definition);
@@ -47,15 +51,15 @@ namespace VED.Tilemaps
                 }
             }
 
-            _tilelayers = new Dictionary<string, Tilelayer>();
+            _tileLayers = new Dictionary<string, TileLayer>();
 
             for (int i = 0; i < layerDefinitions.Count; i++)
             {
-                GameObject gameObject = new GameObject("Tilelayer: " + layerDefinitions[i].Identifier);
+                GameObject gameObject = new GameObject("TileLayer: " + layerDefinitions[i].Identifier);
                 gameObject.transform.SetParent(transform);
                 gameObject.transform.localPosition = Vector3.zero;
 
-                _tilelayers.Add(layerDefinitions[i].Iid, gameObject.AddComponent<Tilelayer>().Init(layerDefinitions[i], layerDefinitions.Count - i));
+                _tileLayers.Add(layerDefinitions[i].Iid, gameObject.AddComponent<TileLayer>().Init(layerDefinitions[i], layerDefinitions.Count - i));
             }
         }
 
@@ -86,22 +90,22 @@ namespace VED.Tilemaps
         public virtual void InitNeighbours(Level definition)
         {
             // cache manager
-            TilelevelManager tilelevelManager = TilelevelManager.Instance;
+            TileLevelManager tilelevelManager = TileLevelManager.Instance;
 
             // set up neighbours
-            _neighbourTilelevels = new Dictionary<char, List<Tilelevel>>()
+            _neighbourTileLevels = new Dictionary<char, List<TileLevel>>()
             {
-                { 'n', new List<Tilelevel>() },
-                { 'e', new List<Tilelevel>() },
-                { 's', new List<Tilelevel>() },
-                { 'w', new List<Tilelevel>() }
+                { 'n', new List<TileLevel>() },
+                { 'e', new List<TileLevel>() },
+                { 's', new List<TileLevel>() },
+                { 'w', new List<TileLevel>() }
             };
             foreach (NeighbourLevel neighbourLevel in definition.Neighbours)
             {
                 if (!tilelevelManager.Tilelevels.ContainsKey(neighbourLevel.LevelIid)) continue;
 
-                if (tilelevelManager.Tilelevels[neighbourLevel.LevelIid] is Tilelevel physicsTilelevel)
-                    _neighbourTilelevels[neighbourLevel.Dir[0]].Add(physicsTilelevel);
+                if (tilelevelManager.Tilelevels[neighbourLevel.LevelIid] is TileLevel physicsTilelevel)
+                    _neighbourTileLevels[neighbourLevel.Dir[0]].Add(physicsTilelevel);
             }
         }
     }

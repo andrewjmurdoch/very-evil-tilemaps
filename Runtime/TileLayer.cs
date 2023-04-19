@@ -2,20 +2,25 @@ using UnityEngine;
 
 namespace VED.Tilemaps
 {
-    public partial class Tilelayer : MonoBehaviour
+    public partial class TileLayer : MonoBehaviour
     {
+        public string ID => _id;
+        protected string _id = string.Empty;
+
         public Tile[,] Tiles => _tiles;
         protected Tile[,] _tiles = null;
 
-        public Tilelayer Init(LayerInstance definition, int sortingOrder)
+        public TileLayer Init(LayerInstance definition, int sortingOrder)
         {
+            _id = definition.Iid;
+
             if (definition.Type == Consts.TILELAYER_TYPE) return InitTilelayer(definition, sortingOrder);
             if (definition.Type == Consts.AUTOLAYER_TYPE) return InitAutolayer(definition, sortingOrder);
             if (definition.Type == Consts.INTLAYER_TYPE ) return InitIntlayer (definition, sortingOrder);
             return this;
         }
 
-        protected Tilelayer InitTilelayer(LayerInstance definition, int sortingOrder)
+        protected TileLayer InitTilelayer(LayerInstance definition, int sortingOrder)
         {
             if (!TilesetManager.Instance.Tilesets.TryGetValue((int)definition.TilesetDefUid, out Tileset tileset))
             {
@@ -37,7 +42,7 @@ namespace VED.Tilemaps
             return this;
         }
 
-        protected Tilelayer InitAutolayer(LayerInstance definition, int sortingOrder)
+        protected TileLayer InitAutolayer(LayerInstance definition, int sortingOrder)
         {
             if (!TilesetManager.Instance.Tilesets.TryGetValue((int)definition.TilesetDefUid, out Tileset tileset))
             {
@@ -59,7 +64,7 @@ namespace VED.Tilemaps
             return this;
         }
 
-        protected Tilelayer InitIntlayer(LayerInstance definition, int sortingOrder)
+        protected TileLayer InitIntlayer(LayerInstance definition, int sortingOrder)
         {
             if (!TilesetManager.Instance.Tilesets.TryGetValue((int)definition.TilesetDefUid, out Tileset tileset))
             {

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace VED.Tilemaps
 {
-    public partial class Tilelayer : MonoBehaviour
+    public partial class TileLayer : MonoBehaviour
     {
         public class Tile : MonoBehaviour
         {
