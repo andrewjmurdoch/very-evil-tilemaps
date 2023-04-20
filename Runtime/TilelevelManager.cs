@@ -31,15 +31,15 @@ namespace VED.Tilemaps
 
         public TileLevel GetTileLevel(Vector2 position)
         {
-            foreach (TileLevel tilelevel in _tileLevels.Values)
+            foreach (TileLevel tileLevel in _tileLevels.Values)
             {
-                if (   (position.x >= tilelevel.transform.position.x)
-                    && (position.x <  tilelevel.transform.position.x + tilelevel.Size.x)
-                    && (position.y <= tilelevel.transform.position.y)
-                    && (position.y >  tilelevel.transform.position.y - tilelevel.Size.y)
+                if (   (position.x >= tileLevel.transform.position.x)
+                    && (position.x <  tileLevel.transform.position.x + tileLevel.Size.x)
+                    && (position.y <= tileLevel.transform.position.y)
+                    && (position.y >  tileLevel.transform.position.y - tileLevel.Size.y)
                    )
                 {
-                    return tilelevel;
+                    return tileLevel;
                 }
             }
             return null;
