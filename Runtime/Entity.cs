@@ -5,6 +5,15 @@ namespace VED.Tilemaps
 {
     public class Entity : MonoBehaviour
     {
+        [Serializable]
+        protected class Reference
+        {
+            [SerializeField] public string entityIid;
+            [SerializeField] public string layerIid;
+            [SerializeField] public string levelIid;
+            [SerializeField] public string worldIid;
+        }
+
         public static Action<Entity> Spawned;
         public static Action<Entity> Despawned;
 
