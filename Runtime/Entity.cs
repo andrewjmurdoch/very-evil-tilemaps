@@ -27,7 +27,7 @@ namespace VED.Tilemaps
         protected string _id;
 
         public string LevelID => _levelID;
-        private string _levelID;
+        protected string _levelID;
 
         public virtual Entity Init(EntityInstance definition, string levelID)
         {
