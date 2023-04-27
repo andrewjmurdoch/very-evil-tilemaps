@@ -23,11 +23,15 @@ namespace VED.Tilemaps
             set { gameObject.SetActive(value);  }
         }
 
+        public string ID => _id;
+        protected string _id;
+
         public string LevelID => _levelID;
         private string _levelID;
 
         public virtual Entity Init(EntityInstance definition, string levelID)
         {
+            _id = definition.Iid;
             _levelID = levelID;
             Spawned?.Invoke(this);
             gameObject.SetActive(false);

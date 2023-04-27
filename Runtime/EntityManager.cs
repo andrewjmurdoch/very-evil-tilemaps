@@ -8,12 +8,11 @@ namespace VED.Tilemaps
         public EntityMapper EntityMapper => _entityMapper;
         private EntityMapper _entityMapper = null;
 
-        public Dictionary<string, List<Entity>> TilelevelEntities => _tilelevelEntities;
-        private Dictionary<string, List<Entity>> _tilelevelEntities = new Dictionary<string, List<Entity>>();
+        public Dictionary<string, Dictionary<string, Entity>> TilelevelEntities => _tilelevelEntities;
+        private Dictionary<string, Dictionary<string, Entity>> _tilelevelEntities = new Dictionary<string, Dictionary<string, Entity>>();
 
         public List<Entity> Entities => _entities;
         private List<Entity> _entities = new List<Entity>();
-
 
         public void Init(EntityMapper entityMapper)
         {
@@ -26,22 +25,22 @@ namespace VED.Tilemaps
 
         private void AddEntity(Entity entity)
         {
-            if (_tilelevelEntities.TryGetValue(entity.LevelID, out List<Entity> tilelevelEntities))
+            if (_tilelevelEntities.TryGetValue(entity.LevelID, out Dictionary<string, Entity> tilelevelEntities))
             {
-                tilelevelEntities.Add(entity);
+                tilelevelEntities.Add(entity.ID, entity);
                 _entities.Add(entity);
                 return;
             }
 
-            _tilelevelEntities.Add(entity.LevelID, new List<Entity>() { entity });
+            _tilelevelEntities.Add(entity.LevelID, new Dictionary<string, Entity>() { { entity.ID, entity } });
             _entities.Add(entity);
         }
 
         private void RemoveEntity(Entity entity)
         {
-            if (_tilelevelEntities.TryGetValue(entity.LevelID, out List<Entity> tilelevelEntities))
+            if (_tilelevelEntities.TryGetValue(entity.LevelID, out Dictionary<string, Entity> tilelevelEntities))
             {
-                tilelevelEntities.Remove(entity);
+                tilelevelEntities.Remove(entity.ID);
             }
             _entities.Remove(entity);
         }
