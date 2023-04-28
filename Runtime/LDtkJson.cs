@@ -2,17 +2,18 @@
 //
 // To parse this JSON data, add NuGet 'Newtonsoft.Json' then do:
 //
-//    using VED.LDtk;
+//    using VED.Tilemaps;
 //
-//    var ldtkjson = Ldtkjson.FromJson(jsonString);
+//    var lDtkJson = LDtkJson.FromJson(jsonString);
 
 namespace VED.Tilemaps
 {
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
     using System;
     using System.Collections.Generic;
+
     using System.Globalization;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
 
     /// <summary>
     /// This file is a JSON schema of files created by LDtk level editor (https://ldtk.io).
@@ -54,10 +55,22 @@ namespace VED.Tilemaps
         public bool BackupOnSave { get; set; }
 
         /// <summary>
+        /// Target relative path to store backup files
+        /// </summary>
+        [JsonProperty("backupRelPath")]
+        public string BackupRelPath { get; set; }
+
+        /// <summary>
         /// Project background color
         /// </summary>
         [JsonProperty("bgColor")]
         public string BgColor { get; set; }
+
+        /// <summary>
+        /// An array of command lines that can be ran manually by the user
+        /// </summary>
+        [JsonProperty("customCommands")]
+        public List<LdtkCustomCommand> CustomCommands { get; set; }
 
         /// <summary>
         /// Default grid size for new layers
@@ -106,6 +119,18 @@ namespace VED.Tilemaps
         public Definitions Defs { get; set; }
 
         /// <summary>
+        /// If the project isn't in MultiWorlds mode, this is the IID of the internal "dummy" World.
+        /// </summary>
+        [JsonProperty("dummyWorldIid")]
+        public string DummyWorldIid { get; set; }
+
+        /// <summary>
+        /// If TRUE, the exported PNGs will include the level background (color or image).
+        /// </summary>
+        [JsonProperty("exportLevelBg")]
+        public bool ExportLevelBg { get; set; }
+
+        /// <summary>
         /// **WARNING**: this deprecated value is no longer exported since version 0.9.3  Replaced
         /// by: `imageExportMode`
         /// </summary>
@@ -140,6 +165,12 @@ namespace VED.Tilemaps
         /// </summary>
         [JsonProperty("identifierStyle")]
         public IdentifierStyle IdentifierStyle { get; set; }
+
+        /// <summary>
+        /// Unique project identifier
+        /// </summary>
+        [JsonProperty("iid")]
+        public string Iid { get; set; }
 
         /// <summary>
         /// "Image export" option when saving project. Possible values: `None`, `OneImagePerLayer`,
@@ -195,6 +226,13 @@ namespace VED.Tilemaps
         public bool SimplifiedExport { get; set; }
 
         /// <summary>
+        /// All instances of entities that have their `exportToToc` flag enabled are listed in this
+        /// array.
+        /// </summary>
+        [JsonProperty("toc")]
+        public List<LdtkTableOfContentEntry> Toc { get; set; }
+
+        /// <summary>
         /// This optional description is used by LDtk Samples to show up some informations and
         /// instructions.
         /// </summary>
@@ -228,20 +266,30 @@ namespace VED.Tilemaps
         public WorldLayout? WorldLayout { get; set; }
 
         /// <summary>
-        /// This array is not used yet in current LDtk version (so, for now, it's always
-        /// empty).<br/><br/>In a later update, it will be possible to have multiple Worlds in a
-        /// single project, each containing multiple Levels.<br/><br/>What will change when "Multiple
-        /// worlds" support will be added to LDtk:<br/><br/> - in current version, a LDtk project
-        /// file can only contain a single world with multiple levels in it. In this case, levels and
-        /// world layout related settings are stored in the root of the JSON.<br/> - after the
-        /// "Multiple worlds" update, there will be a `worlds` array in root, each world containing
-        /// levels and layout settings. Basically, it's pretty much only about moving the `levels`
-        /// array to the `worlds` array, along with world layout related values (eg. `worldGridWidth`
-        /// etc).<br/><br/>If you want to start supporting this future update easily, please refer to
-        /// this documentation: https://github.com/deepnight/ldtk/issues/231
+        /// This array will be empty, unless you enable the Multi-Worlds in the project advanced
+        /// settings.<br/><br/> - in current version, a LDtk project file can only contain a single
+        /// world with multiple levels in it. In this case, levels and world layout related settings
+        /// are stored in the root of the JSON.<br/> - with "Multi-worlds" enabled, there will be a
+        /// `worlds` array in root, each world containing levels and layout settings. Basically, it's
+        /// pretty much only about moving the `levels` array to the `worlds` array, along with world
+        /// layout related values (eg. `worldGridWidth` etc).<br/><br/>If you want to start
+        /// supporting this future update easily, please refer to this documentation:
+        /// https://github.com/deepnight/ldtk/issues/231
         /// </summary>
         [JsonProperty("worlds")]
         public List<World> Worlds { get; set; }
+    }
+
+    public partial class LdtkCustomCommand
+    {
+        [JsonProperty("command")]
+        public string Command { get; set; }
+
+        /// <summary>
+        /// Possible values: `Manual`, `AfterLoad`, `BeforeSave`, `AfterSave`
+        /// </summary>
+        [JsonProperty("when")]
+        public When When { get; set; }
     }
 
     /// <summary>
@@ -301,6 +349,19 @@ namespace VED.Tilemaps
         /// </summary>
         [JsonProperty("color")]
         public string Color { get; set; }
+
+        /// <summary>
+        /// User defined documentation for this element to provide help/tips to level designers.
+        /// </summary>
+        [JsonProperty("doc")]
+        public string Doc { get; set; }
+
+        /// <summary>
+        /// If enabled, all instances of this entity will be listed in the project "Table of content"
+        /// object.
+        /// </summary>
+        [JsonProperty("exportToToc")]
+        public bool ExportToToc { get; set; }
 
         /// <summary>
         /// Array of field definitions
@@ -406,8 +467,8 @@ namespace VED.Tilemaps
         public List<string> Tags { get; set; }
 
         /// <summary>
-        /// **WARNING**: this deprecated value will be *removed* completely on version 1.2.0+
-        /// Replaced by: `tileRect`
+        /// **WARNING**: this deprecated value is no longer exported since version 1.2.0  Replaced
+        /// by: `tileRect`
         /// </summary>
         [JsonProperty("tileId")]
         public long? TileId { get; set; }
@@ -472,10 +533,13 @@ namespace VED.Tilemaps
         public List<string> AcceptFileTypes { get; set; }
 
         /// <summary>
-        /// Possible values: `Any`, `OnlySame`, `OnlyTags`
+        /// Possible values: `Any`, `OnlySame`, `OnlyTags`, `OnlySpecificEntity`
         /// </summary>
         [JsonProperty("allowedRefs")]
         public AllowedRefs AllowedRefs { get; set; }
+
+        [JsonProperty("allowedRefsEntityUid")]
+        public long? AllowedRefsEntityUid { get; set; }
 
         [JsonProperty("allowedRefTags")]
         public List<string> AllowedRefTags { get; set; }
@@ -511,6 +575,13 @@ namespace VED.Tilemaps
         [JsonProperty("defaultOverride")]
         public object DefaultOverride { get; set; }
 
+        /// <summary>
+        /// User defined documentation for this field to provide help/tips to level designers about
+        /// accepted values.
+        /// </summary>
+        [JsonProperty("doc")]
+        public string Doc { get; set; }
+
         [JsonProperty("editorAlwaysShow")]
         public bool EditorAlwaysShow { get; set; }
 
@@ -518,8 +589,8 @@ namespace VED.Tilemaps
         public bool EditorCutLongValues { get; set; }
 
         /// <summary>
-        /// Possible values: `Hidden`, `ValueOnly`, `NameAndValue`, `EntityTile`, `Points`,
-        /// `PointStar`, `PointPath`, `PointPathLoop`, `RadiusPx`, `RadiusGrid`,
+        /// Possible values: `Hidden`, `ValueOnly`, `NameAndValue`, `EntityTile`, `LevelTile`,
+        /// `Points`, `PointStar`, `PointPath`, `PointPathLoop`, `RadiusPx`, `RadiusGrid`,
         /// `ArrayCountWithLabel`, `ArrayCountNoLabel`, `RefLinkBetweenPivots`,
         /// `RefLinkBetweenCenters`
         /// </summary>
@@ -531,6 +602,18 @@ namespace VED.Tilemaps
         /// </summary>
         [JsonProperty("editorDisplayPos")]
         public EditorDisplayPos EditorDisplayPos { get; set; }
+
+        [JsonProperty("editorDisplayScale")]
+        public double EditorDisplayScale { get; set; }
+
+        /// <summary>
+        /// Possible values: `ZigZag`, `StraightArrow`, `CurvedArrow`, `ArrowsLine`, `DashedLine`
+        /// </summary>
+        [JsonProperty("editorLinkStyle")]
+        public EditorLinkStyle EditorLinkStyle { get; set; }
+
+        [JsonProperty("editorShowInWorld")]
+        public bool EditorShowInWorld { get; set; }
 
         [JsonProperty("editorTextPrefix")]
         public string EditorTextPrefix { get; set; }
@@ -688,8 +771,8 @@ namespace VED.Tilemaps
     public partial class EnumValueDefinition
     {
         /// <summary>
-        /// An array of 4 Int values that refers to the tile in the tileset image: `[ x, y, width,
-        /// height ]`
+        /// **WARNING**: this deprecated value will be *removed* completely on version 1.4.0+
+        /// Replaced by: `tileRect`
         /// </summary>
         [JsonProperty("__tileSrcRect")]
         public List<long> TileSrcRect { get; set; }
@@ -707,10 +790,17 @@ namespace VED.Tilemaps
         public string Id { get; set; }
 
         /// <summary>
-        /// The optional ID of the tile
+        /// **WARNING**: this deprecated value will be *removed* completely on version 1.4.0+
+        /// Replaced by: `tileRect`
         /// </summary>
         [JsonProperty("tileId")]
         public long? TileId { get; set; }
+
+        /// <summary>
+        /// Optional tileset rectangle to represents this value
+        /// </summary>
+        [JsonProperty("tileRect")]
+        public TilesetRectangle TileRect { get; set; }
     }
 
     public partial class LayerDefinition
@@ -731,17 +821,29 @@ namespace VED.Tilemaps
         public long? AutoSourceLayerDefUid { get; set; }
 
         /// <summary>
-        /// **WARNING**: this deprecated value will be *removed* completely on version 1.2.0+
-        /// Replaced by: `tilesetDefUid`
+        /// **WARNING**: this deprecated value is no longer exported since version 1.2.0  Replaced
+        /// by: `tilesetDefUid`
         /// </summary>
         [JsonProperty("autoTilesetDefUid")]
         public long? AutoTilesetDefUid { get; set; }
+
+        /// <summary>
+        /// Allow editor selections when the layer is not currently active.
+        /// </summary>
+        [JsonProperty("canSelectWhenInactive")]
+        public bool CanSelectWhenInactive { get; set; }
 
         /// <summary>
         /// Opacity of the layer (0 to 1.0)
         /// </summary>
         [JsonProperty("displayOpacity")]
         public double DisplayOpacity { get; set; }
+
+        /// <summary>
+        /// User defined documentation for this element to provide help/tips to level designers.
+        /// </summary>
+        [JsonProperty("doc")]
+        public string Doc { get; set; }
 
         /// <summary>
         /// An array of tags to forbid some Entities in this layer
@@ -895,6 +997,9 @@ namespace VED.Tilemaps
 
         [JsonProperty("uid")]
         public long Uid { get; set; }
+
+        [JsonProperty("usesWizard")]
+        public bool UsesWizard { get; set; }
     }
 
     /// <summary>
@@ -997,6 +1102,42 @@ namespace VED.Tilemaps
         /// </summary>
         [JsonProperty("tileMode")]
         public TileMode TileMode { get; set; }
+
+        /// <summary>
+        /// Max random offset for X tile pos
+        /// </summary>
+        [JsonProperty("tileRandomXMax")]
+        public long TileRandomXMax { get; set; }
+
+        /// <summary>
+        /// Min random offset for X tile pos
+        /// </summary>
+        [JsonProperty("tileRandomXMin")]
+        public long TileRandomXMin { get; set; }
+
+        /// <summary>
+        /// Max random offset for Y tile pos
+        /// </summary>
+        [JsonProperty("tileRandomYMax")]
+        public long TileRandomYMax { get; set; }
+
+        /// <summary>
+        /// Min random offset for Y tile pos
+        /// </summary>
+        [JsonProperty("tileRandomYMin")]
+        public long TileRandomYMin { get; set; }
+
+        /// <summary>
+        /// Tile X offset
+        /// </summary>
+        [JsonProperty("tileXOffset")]
+        public long TileXOffset { get; set; }
+
+        /// <summary>
+        /// Tile Y offset
+        /// </summary>
+        [JsonProperty("tileYOffset")]
+        public long TileYOffset { get; set; }
 
         /// <summary>
         /// Unique Int identifier
@@ -1198,6 +1339,9 @@ namespace VED.Tilemaps
         [JsonProperty("AutoRuleDef", NullValueHandling = NullValueHandling.Ignore)]
         public AutoLayerRuleDefinition AutoRuleDef { get; set; }
 
+        [JsonProperty("CustomCommand", NullValueHandling = NullValueHandling.Ignore)]
+        public LdtkCustomCommand CustomCommand { get; set; }
+
         [JsonProperty("Definitions", NullValueHandling = NullValueHandling.Ignore)]
         public Definitions Definitions { get; set; }
 
@@ -1208,7 +1352,7 @@ namespace VED.Tilemaps
         public EntityInstance EntityInstance { get; set; }
 
         [JsonProperty("EntityReferenceInfos", NullValueHandling = NullValueHandling.Ignore)]
-        public FieldInstanceEntityReference EntityReferenceInfos { get; set; }
+        public ReferenceToAnEntityInstance EntityReferenceInfos { get; set; }
 
         [JsonProperty("EnumDef", NullValueHandling = NullValueHandling.Ignore)]
         public EnumDefinition EnumDef { get; set; }
@@ -1226,7 +1370,7 @@ namespace VED.Tilemaps
         public FieldInstance FieldInstance { get; set; }
 
         [JsonProperty("GridPoint", NullValueHandling = NullValueHandling.Ignore)]
-        public FieldInstanceGridPoint GridPoint { get; set; }
+        public GridPoint GridPoint { get; set; }
 
         [JsonProperty("IntGridValueDef", NullValueHandling = NullValueHandling.Ignore)]
         public IntGridValueDefinition IntGridValueDef { get; set; }
@@ -1248,6 +1392,9 @@ namespace VED.Tilemaps
 
         [JsonProperty("NeighbourLevel", NullValueHandling = NullValueHandling.Ignore)]
         public NeighbourLevel NeighbourLevel { get; set; }
+
+        [JsonProperty("TableOfContentEntry", NullValueHandling = NullValueHandling.Ignore)]
+        public LdtkTableOfContentEntry TableOfContentEntry { get; set; }
 
         [JsonProperty("Tile", NullValueHandling = NullValueHandling.Ignore)]
         public TileInstance Tile { get; set; }
@@ -1361,7 +1508,7 @@ namespace VED.Tilemaps
         public TilesetRectangle Tile { get; set; }
 
         /// <summary>
-        /// Type of the field, such as `Int`, `Float`, `String`, `Enum(my_enu_name)`, `Bool`,
+        /// Type of the field, such as `Int`, `Float`, `String`, `Enum(my_enum_name)`, `Bool`,
         /// etc.<br/>  NOTE: if you enable the advanced option **Use Multilines type**, you will have
         /// "*Multilines*" instead of "*String*" when relevant.
         /// </summary>
@@ -1396,9 +1543,9 @@ namespace VED.Tilemaps
     }
 
     /// <summary>
-    /// This object is used in Field Instances to describe an EntityRef value.
+    /// This object describes the "location" of an Entity instance in the project worlds.
     /// </summary>
-    public partial class FieldInstanceEntityReference
+    public partial class ReferenceToAnEntityInstance
     {
         /// <summary>
         /// IID of the refered EntityInstance
@@ -1428,7 +1575,7 @@ namespace VED.Tilemaps
     /// <summary>
     /// This object is just a grid-based coordinate used in Field values.
     /// </summary>
-    public partial class FieldInstanceGridPoint
+    public partial class GridPoint
     {
         /// <summary>
         /// X grid-based coordinate
@@ -1587,14 +1734,16 @@ namespace VED.Tilemaps
 
         /// <summary>
         /// X offset in pixels to render this layer, usually 0 (IMPORTANT: this should be added to
-        /// the `LayerDef` optional offset, see `__pxTotalOffsetX`)
+        /// the `LayerDef` optional offset, so you should probably prefer using `__pxTotalOffsetX`
+        /// which contains the total offset value)
         /// </summary>
         [JsonProperty("pxOffsetX")]
         public long PxOffsetX { get; set; }
 
         /// <summary>
         /// Y offset in pixels to render this layer, usually 0 (IMPORTANT: this should be added to
-        /// the `LayerDef` optional offset, see `__pxTotalOffsetY`)
+        /// the `LayerDef` optional offset, so you should probably prefer using `__pxTotalOffsetX`
+        /// which contains the total offset value)
         /// </summary>
         [JsonProperty("pxOffsetY")]
         public long PxOffsetY { get; set; }
@@ -1714,7 +1863,7 @@ namespace VED.Tilemaps
         /// <summary>
         /// An enum defining the way the background image (if any) is positioned on the level. See
         /// `__bgPos` for resulting position info. Possible values: &lt;`null`&gt;, `Unscaled`,
-        /// `Contain`, `Cover`, `CoverDirty`
+        /// `Contain`, `Cover`, `CoverDirty`, `Repeat`
         /// </summary>
         [JsonProperty("bgPos")]
         public BgPos? LevelBgPos { get; set; }
@@ -1856,17 +2005,26 @@ namespace VED.Tilemaps
         public string LevelIid { get; set; }
 
         /// <summary>
-        /// **WARNING**: this deprecated value will be *removed* completely on version 1.2.0+
-        /// Replaced by: `levelIid`
+        /// **WARNING**: this deprecated value is no longer exported since version 1.2.0  Replaced
+        /// by: `levelIid`
         /// </summary>
-        [JsonProperty("levelUid", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("levelUid")]
         public long? LevelUid { get; set; }
     }
 
+    public partial class LdtkTableOfContentEntry
+    {
+        [JsonProperty("identifier")]
+        public string Identifier { get; set; }
+
+        [JsonProperty("instances")]
+        public List<ReferenceToAnEntityInstance> Instances { get; set; }
+    }
+
     /// <summary>
-    /// **IMPORTANT**: this type is not used *yet* in current LDtk version. It's only presented
-    /// here as a preview of a planned feature.  A World contains multiple levels, and it has its
-    /// own layout settings.
+    /// **IMPORTANT**: this type is available as a preview. You can rely on it to update your
+    /// importers, for when it will be officially available.  A World contains multiple levels,
+    /// and it has its own layout settings.
     /// </summary>
     public partial class World
     {
@@ -1923,22 +2081,32 @@ namespace VED.Tilemaps
     }
 
     /// <summary>
-    /// Possible values: `Any`, `OnlySame`, `OnlyTags`
+    /// Possible values: `Manual`, `AfterLoad`, `BeforeSave`, `AfterSave`
     /// </summary>
-    public enum AllowedRefs { Any, OnlySame, OnlyTags };
+    public enum When { AfterLoad, AfterSave, BeforeSave, Manual };
 
     /// <summary>
-    /// Possible values: `Hidden`, `ValueOnly`, `NameAndValue`, `EntityTile`, `Points`,
-    /// `PointStar`, `PointPath`, `PointPathLoop`, `RadiusPx`, `RadiusGrid`,
+    /// Possible values: `Any`, `OnlySame`, `OnlyTags`, `OnlySpecificEntity`
+    /// </summary>
+    public enum AllowedRefs { Any, OnlySame, OnlySpecificEntity, OnlyTags };
+
+    /// <summary>
+    /// Possible values: `Hidden`, `ValueOnly`, `NameAndValue`, `EntityTile`, `LevelTile`,
+    /// `Points`, `PointStar`, `PointPath`, `PointPathLoop`, `RadiusPx`, `RadiusGrid`,
     /// `ArrayCountWithLabel`, `ArrayCountNoLabel`, `RefLinkBetweenPivots`,
     /// `RefLinkBetweenCenters`
     /// </summary>
-    public enum EditorDisplayMode { ArrayCountNoLabel, ArrayCountWithLabel, EntityTile, Hidden, NameAndValue, PointPath, PointPathLoop, PointStar, Points, RadiusGrid, RadiusPx, RefLinkBetweenCenters, RefLinkBetweenPivots, ValueOnly };
+    public enum EditorDisplayMode { ArrayCountNoLabel, ArrayCountWithLabel, EntityTile, Hidden, LevelTile, NameAndValue, PointPath, PointPathLoop, PointStar, Points, RadiusGrid, RadiusPx, RefLinkBetweenCenters, RefLinkBetweenPivots, ValueOnly };
 
     /// <summary>
     /// Possible values: `Above`, `Center`, `Beneath`
     /// </summary>
     public enum EditorDisplayPos { Above, Beneath, Center };
+
+    /// <summary>
+    /// Possible values: `ZigZag`, `StraightArrow`, `CurvedArrow`, `ArrowsLine`, `DashedLine`
+    /// </summary>
+    public enum EditorLinkStyle { ArrowsLine, CurvedArrow, DashedLine, StraightArrow, ZigZag };
 
     public enum TextLanguageMode { LangC, LangHaxe, LangJs, LangJson, LangLog, LangLua, LangMarkdown, LangPython, LangRuby, LangXml };
 
@@ -1985,7 +2153,7 @@ namespace VED.Tilemaps
 
     public enum Flag { DiscardPreCsvIntGrid, ExportPreCsvIntGridFormat, IgnoreBackupSuggest, MultiWorlds, PrependIndexToLevelFileNames, UseMultilinesType };
 
-    public enum BgPos { Contain, Cover, CoverDirty, Unscaled };
+    public enum BgPos { Contain, Cover, CoverDirty, Repeat, Unscaled };
 
     public enum WorldLayout { Free, GridVania, LinearHorizontal, LinearVertical };
 
@@ -2001,14 +2169,14 @@ namespace VED.Tilemaps
     /// </summary>
     public enum ImageExportMode { LayersAndLevels, None, OneImagePerLayer, OneImagePerLevel };
 
-    public partial class Ldtkjson
+    public partial class LDtkJson
     {
-        public static Ldtkjson FromJson(string json) => JsonConvert.DeserializeObject<Ldtkjson>(json, Converter.Settings);
+        public static LDtkJson FromJson(string json) => JsonConvert.DeserializeObject<LDtkJson>(json, VED.Tilemaps.Converter.Settings);
     }
 
     public static class Serialize
     {
-        public static string ToJson(this Ldtkjson self) => JsonConvert.SerializeObject(self, Converter.Settings);
+        public static string ToJson(this LDtkJson self) => JsonConvert.SerializeObject(self, VED.Tilemaps.Converter.Settings);
     }
 
     internal static class Converter
@@ -2021,9 +2189,11 @@ namespace VED.Tilemaps
             {
                 CheckerConverter.Singleton,
                 TileModeConverter.Singleton,
+                WhenConverter.Singleton,
                 AllowedRefsConverter.Singleton,
                 EditorDisplayModeConverter.Singleton,
                 EditorDisplayPosConverter.Singleton,
+                EditorLinkStyleConverter.Singleton,
                 TextLanguageModeConverter.Singleton,
                 LimitBehaviorConverter.Singleton,
                 LimitScopeConverter.Singleton,
@@ -2128,6 +2298,57 @@ namespace VED.Tilemaps
         public static readonly TileModeConverter Singleton = new TileModeConverter();
     }
 
+    internal class WhenConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(When) || t == typeof(When?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "AfterLoad":
+                    return When.AfterLoad;
+                case "AfterSave":
+                    return When.AfterSave;
+                case "BeforeSave":
+                    return When.BeforeSave;
+                case "Manual":
+                    return When.Manual;
+            }
+            throw new Exception("Cannot unmarshal type When");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (When)untypedValue;
+            switch (value)
+            {
+                case When.AfterLoad:
+                    serializer.Serialize(writer, "AfterLoad");
+                    return;
+                case When.AfterSave:
+                    serializer.Serialize(writer, "AfterSave");
+                    return;
+                case When.BeforeSave:
+                    serializer.Serialize(writer, "BeforeSave");
+                    return;
+                case When.Manual:
+                    serializer.Serialize(writer, "Manual");
+                    return;
+            }
+            throw new Exception("Cannot marshal type When");
+        }
+
+        public static readonly WhenConverter Singleton = new WhenConverter();
+    }
+
     internal class AllowedRefsConverter : JsonConverter
     {
         public override bool CanConvert(Type t) => t == typeof(AllowedRefs) || t == typeof(AllowedRefs?);
@@ -2142,6 +2363,8 @@ namespace VED.Tilemaps
                     return AllowedRefs.Any;
                 case "OnlySame":
                     return AllowedRefs.OnlySame;
+                case "OnlySpecificEntity":
+                    return AllowedRefs.OnlySpecificEntity;
                 case "OnlyTags":
                     return AllowedRefs.OnlyTags;
             }
@@ -2163,6 +2386,9 @@ namespace VED.Tilemaps
                     return;
                 case AllowedRefs.OnlySame:
                     serializer.Serialize(writer, "OnlySame");
+                    return;
+                case AllowedRefs.OnlySpecificEntity:
+                    serializer.Serialize(writer, "OnlySpecificEntity");
                     return;
                 case AllowedRefs.OnlyTags:
                     serializer.Serialize(writer, "OnlyTags");
@@ -2192,6 +2418,8 @@ namespace VED.Tilemaps
                     return EditorDisplayMode.EntityTile;
                 case "Hidden":
                     return EditorDisplayMode.Hidden;
+                case "LevelTile":
+                    return EditorDisplayMode.LevelTile;
                 case "NameAndValue":
                     return EditorDisplayMode.NameAndValue;
                 case "PointPath":
@@ -2237,6 +2465,9 @@ namespace VED.Tilemaps
                     return;
                 case EditorDisplayMode.Hidden:
                     serializer.Serialize(writer, "Hidden");
+                    return;
+                case EditorDisplayMode.LevelTile:
+                    serializer.Serialize(writer, "LevelTile");
                     return;
                 case EditorDisplayMode.NameAndValue:
                     serializer.Serialize(writer, "NameAndValue");
@@ -2319,6 +2550,62 @@ namespace VED.Tilemaps
         }
 
         public static readonly EditorDisplayPosConverter Singleton = new EditorDisplayPosConverter();
+    }
+
+    internal class EditorLinkStyleConverter : JsonConverter
+    {
+        public override bool CanConvert(Type t) => t == typeof(EditorLinkStyle) || t == typeof(EditorLinkStyle?);
+
+        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null) return null;
+            var value = serializer.Deserialize<string>(reader);
+            switch (value)
+            {
+                case "ArrowsLine":
+                    return EditorLinkStyle.ArrowsLine;
+                case "CurvedArrow":
+                    return EditorLinkStyle.CurvedArrow;
+                case "DashedLine":
+                    return EditorLinkStyle.DashedLine;
+                case "StraightArrow":
+                    return EditorLinkStyle.StraightArrow;
+                case "ZigZag":
+                    return EditorLinkStyle.ZigZag;
+            }
+            throw new Exception("Cannot unmarshal type EditorLinkStyle");
+        }
+
+        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+        {
+            if (untypedValue == null)
+            {
+                serializer.Serialize(writer, null);
+                return;
+            }
+            var value = (EditorLinkStyle)untypedValue;
+            switch (value)
+            {
+                case EditorLinkStyle.ArrowsLine:
+                    serializer.Serialize(writer, "ArrowsLine");
+                    return;
+                case EditorLinkStyle.CurvedArrow:
+                    serializer.Serialize(writer, "CurvedArrow");
+                    return;
+                case EditorLinkStyle.DashedLine:
+                    serializer.Serialize(writer, "DashedLine");
+                    return;
+                case EditorLinkStyle.StraightArrow:
+                    serializer.Serialize(writer, "StraightArrow");
+                    return;
+                case EditorLinkStyle.ZigZag:
+                    serializer.Serialize(writer, "ZigZag");
+                    return;
+            }
+            throw new Exception("Cannot marshal type EditorLinkStyle");
+        }
+
+        public static readonly EditorLinkStyleConverter Singleton = new EditorLinkStyleConverter();
     }
 
     internal class TextLanguageModeConverter : JsonConverter
@@ -2712,6 +2999,8 @@ namespace VED.Tilemaps
                     return BgPos.Cover;
                 case "CoverDirty":
                     return BgPos.CoverDirty;
+                case "Repeat":
+                    return BgPos.Repeat;
                 case "Unscaled":
                     return BgPos.Unscaled;
             }
@@ -2736,6 +3025,9 @@ namespace VED.Tilemaps
                     return;
                 case BgPos.CoverDirty:
                     serializer.Serialize(writer, "CoverDirty");
+                    return;
+                case BgPos.Repeat:
+                    serializer.Serialize(writer, "Repeat");
                     return;
                 case BgPos.Unscaled:
                     serializer.Serialize(writer, "Unscaled");
