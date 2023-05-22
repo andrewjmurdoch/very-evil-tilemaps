@@ -59,7 +59,7 @@ namespace VED.Tilemaps
                 gameObject.transform.SetParent(transform);
                 gameObject.transform.localPosition = Vector3.zero;
 
-                _tileLayers.Add(layerDefinitions[i].Iid, gameObject.AddComponent<TileLayer>().Init(layerDefinitions[i], layerDefinitions.Count - i));
+                _tileLayers.Add(layerDefinitions[i].Iid, gameObject.AddComponent<TileLayer>().Init(layerDefinitions[i], -i));
             }
         }
 

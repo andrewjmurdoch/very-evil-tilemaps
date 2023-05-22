@@ -1,14 +1,10 @@
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.U2D;
 
 namespace VED.Tilemaps
 {
     public partial class Tileset
-    {
-        //private const string SPRITEATLAS_EXTENSION = ".spriteatlas";
-        
+    {        
         public Tile[] Tiles => _tiles;
         protected Tile[] _tiles = null;
 
