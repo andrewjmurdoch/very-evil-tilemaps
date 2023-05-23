@@ -27,12 +27,11 @@ namespace VED.Tilemaps
                 int x = (int)definition.EntityInstances[i].Px[0] / Consts.TILE_SIZE;
                 int y = (int)definition.EntityInstances[i].Px[1] / Consts.TILE_SIZE;
 
-                Entity entityInstance = Instantiate(entityPrefab).Init(definition.EntityInstances[i], levelID);
-                entityInstance.name = "Entity [" + x + ", " + y + "]: " + definition.EntityInstances[i].Identifier;
-                entityInstance.transform.SetParent(transform);
-
                 Vector2 offset = (Vector2.right + Vector2.down) * (1f / 2f);
-                entityInstance.transform.localPosition = new Vector2(x, -y) + offset;
+                Vector2 position = new Vector2(x, -y) + offset;
+
+                Entity entityInstance = Instantiate(entityPrefab, position, Quaternion.identity, transform).Init(definition.EntityInstances[i], levelID);
+                entityInstance.name = "Entity [" + x + ", " + y + "]: " + definition.EntityInstances[i].Identifier;
 
                 _entities.Add(definition.EntityInstances[i].Iid, entityInstance);
             }
