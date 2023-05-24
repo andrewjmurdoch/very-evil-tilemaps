@@ -24,14 +24,15 @@ namespace VED.Tilemaps
                 Entity entityPrefab = EntityManager.Instance.EntityMapper[definition.EntityInstances[i].Identifier];
                 if (entityPrefab == null) continue;
 
-                int x = (int)definition.EntityInstances[i].Px[0] / Consts.TILE_SIZE;
-                int y = (int)definition.EntityInstances[i].Px[1] / Consts.TILE_SIZE;
+                int xPosition = (int)definition.EntityInstances[i].Px[0] / Consts.TILE_SIZE;
+                int yPosition = (int)definition.EntityInstances[i].Px[1] / Consts.TILE_SIZE;
+                float xPivot = (float)definition.EntityInstances[i].Pivot[0];
+                float yPivot = (float)definition.EntityInstances[i].Pivot[1];
 
-                Vector2 offset = (Vector2.right + Vector2.down) * (1f / 2f);
-                Vector2 position = (Vector2)transform.position + new Vector2(x, -y) + offset;
+                Vector2 position = (Vector2)transform.position + new Vector2(xPosition, -yPosition) + new Vector2(xPivot, -yPivot);
 
                 Entity entityInstance = Instantiate(entityPrefab, position, Quaternion.identity, transform).Init(definition.EntityInstances[i], levelID);
-                entityInstance.name = "Entity [" + x + ", " + y + "]: " + definition.EntityInstances[i].Identifier;
+                entityInstance.name = "Entity [" + xPosition + ", " + yPosition + "]: " + definition.EntityInstances[i].Identifier;
 
                 _entities.Add(definition.EntityInstances[i].Iid, entityInstance);
             }
