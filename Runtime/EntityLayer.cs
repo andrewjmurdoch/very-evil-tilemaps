@@ -24,8 +24,8 @@ namespace VED.Tilemaps
                 Entity entityPrefab = EntityManager.Instance.EntityMapper[definition.EntityInstances[i].Identifier];
                 if (entityPrefab == null) continue;
 
-                int xPosition = (int)definition.EntityInstances[i].Px[0] / Consts.TILE_SIZE;
-                int yPosition = (int)definition.EntityInstances[i].Px[1] / Consts.TILE_SIZE;
+                int xPosition = (int)definition.EntityInstances[i].Grid[0];
+                int yPosition = (int)definition.EntityInstances[i].Grid[1];
                 float xPivot = (float)definition.EntityInstances[i].Pivot[0];
                 float yPivot = (float)definition.EntityInstances[i].Pivot[1];
 
