@@ -18,6 +18,7 @@ namespace VED.Tilemaps
         {
             _entityMapper = entityMapper;
             _tilelevelEntities = new Dictionary<string, Dictionary<string, Entity>>();
+            _entities = new List<Entity>();
 
             // listen to spawning events
             Entity.Spawned += AddEntity;
@@ -28,6 +29,9 @@ namespace VED.Tilemaps
         {
             Entity.Spawned -= AddEntity;
             Entity.Despawned -= RemoveEntity;
+
+            _tilelevelEntities.Clear();
+            _entities.Clear();
         }
 
         private void AddEntity(Entity entity)
