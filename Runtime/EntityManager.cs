@@ -17,10 +17,17 @@ namespace VED.Tilemaps
         public void Init(EntityMapper entityMapper)
         {
             _entityMapper = entityMapper;
+            _tilelevelEntities = new Dictionary<string, Dictionary<string, Entity>>();
 
             // listen to spawning events
             Entity.Spawned += AddEntity;
             Entity.Despawned += RemoveEntity;
+        }
+
+        public void Deinit()
+        {
+            Entity.Spawned -= AddEntity;
+            Entity.Despawned -= RemoveEntity;
         }
 
         private void AddEntity(Entity entity)
