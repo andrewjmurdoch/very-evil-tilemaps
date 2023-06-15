@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 namespace VED.Tilemaps
@@ -20,6 +22,16 @@ namespace VED.Tilemaps
             return this;
         }
 
+        public void InitAsync(LayerInstance definition, int sortingOrder, int batchSize, Action<TileLayer> callback)
+        {
+            _id = definition.Iid;
+
+                 if (definition.Type == Consts.TILELAYER_TYPE) InitTilelayerAsync(definition, sortingOrder, batchSize, callback);
+            else if (definition.Type == Consts.AUTOLAYER_TYPE) InitAutolayerAsync(definition, sortingOrder, batchSize, callback);
+            else if (definition.Type == Consts.INTLAYER_TYPE ) InitIntlayerAsync (definition, sortingOrder, batchSize, callback);
+        }
+
+        #region Synchronous
         protected TileLayer InitTilelayer(LayerInstance definition, int sortingOrder)
         {
             if (!TilesetManager.Instance.Tilesets.TryGetValue((int)definition.TilesetDefUid, out Tileset tileset))
@@ -85,6 +97,144 @@ namespace VED.Tilemaps
 
             return this;
         }
+        #endregion
+
+        #region Asynchronous
+        protected void InitTilelayerAsync(LayerInstance definition, int sortingOrder, int batchSize, Action<TileLayer> callback)
+        {
+            if (!TilesetManager.Instance.Tilesets.TryGetValue((int)definition.TilesetDefUid, out Tileset tileset))
+            {
+                callback?.Invoke(this);
+                return;
+            }
+
+            _tiles = new Tile[definition.CWid, definition.CHei];
+
+            int count = definition.GridTiles.Count;
+            if (count <= 0)
+            {
+                callback?.Invoke(this);
+                return;
+            }
+            int batches = (count / batchSize) + Math.Clamp(count % batchSize, 0, 1);
+
+            void InstantiateTileAsync(int index)
+            {
+                Tileset.Tile tilesetTile = tileset.Tiles[definition.GridTiles[index].T];
+
+                int x = (int)definition.GridTiles[index].Px[0] / Consts.TILE_SIZE;
+                int y = (int)definition.GridTiles[index].Px[1] / Consts.TILE_SIZE;
+
+                InitTile(tilesetTile, x, y, sortingOrder);
+            }
+
+            IEnumerator InstatiateTileBatchesAsync()
+            {
+                for (int i = 0; i < batches; i++)
+                {
+                    for (int j = 0; j < batchSize && (i * batchSize) + j < count; j++)
+                    {
+                        InstantiateTileAsync((i * batchSize) + j);
+                    }
+                    yield return null;
+                }
+
+                callback?.Invoke(this);
+            }
+
+            StartCoroutine(InstatiateTileBatchesAsync());
+        }
+
+        protected void InitAutolayerAsync(LayerInstance definition, int sortingOrder, int batchSize, Action<TileLayer> callback)
+        {
+            if (!TilesetManager.Instance.Tilesets.TryGetValue((int)definition.TilesetDefUid, out Tileset tileset))
+            {
+                callback?.Invoke(this);
+                return;
+            }
+
+            _tiles = new Tile[definition.CWid, definition.CHei];
+
+            int count = definition.AutoLayerTiles.Count;
+            if (count <= 0)
+            {
+                callback?.Invoke(this);
+                return;
+            }
+            int batches = (count / batchSize) + Math.Clamp(count % batchSize, 0, 1);
+
+            void InstantiateTileAsync(int index)
+            {
+                Tileset.Tile tilesetTile = tileset.Tiles[definition.AutoLayerTiles[index].T];
+
+                int x = (int)definition.AutoLayerTiles[index].Px[0] / Consts.TILE_SIZE;
+                int y = (int)definition.AutoLayerTiles[index].Px[1] / Consts.TILE_SIZE;
+
+                InitTile(tilesetTile, x, y, sortingOrder);
+            }
+
+            IEnumerator InstatiateTileBatchesAsync()
+            {
+                for (int i = 0; i < batches; i++)
+                {
+                    for (int j = 0; j < batchSize && (i * batchSize) + j < count; j++)
+                    {
+                        InstantiateTileAsync((i * batchSize) + j);
+                    }
+                    yield return null;
+                }
+
+                callback?.Invoke(this);
+            }
+
+            StartCoroutine(InstatiateTileBatchesAsync());
+        }
+
+        protected void InitIntlayerAsync(LayerInstance definition, int sortingOrder, int batchSize, Action<TileLayer> callback)
+        {
+            if (!TilesetManager.Instance.Tilesets.TryGetValue((int)definition.TilesetDefUid, out Tileset tileset))
+            {
+                callback?.Invoke(this);
+                return;
+            }
+
+            _tiles = new Tile[definition.CWid, definition.CHei];
+
+            int count = definition.AutoLayerTiles.Count;
+            if (count <= 0)
+            {
+                callback?.Invoke(this);
+                return;
+            }
+            int batches = (count / batchSize) + Math.Clamp(count % batchSize, 0, 1);
+
+            void InstantiateTileAsync(int index)
+            {
+                Tileset.Tile tilesetTile = tileset.Tiles[definition.AutoLayerTiles[index].T];
+
+                int x = (int)definition.AutoLayerTiles[index].Px[0] / Consts.TILE_SIZE;
+                int y = (int)definition.AutoLayerTiles[index].Px[1] / Consts.TILE_SIZE;
+
+                InitTile(tilesetTile, x, y, sortingOrder);
+            }
+
+            IEnumerator InstatiateTileBatchesAsync()
+            {
+                for (int i = 0; i < batches; i++)
+                {
+                    for (int j = 0; j < batchSize && (i * batchSize) + j < count; j++)
+                    {
+                        InstantiateTileAsync((i * batchSize) + j);
+                    }
+                    yield return null;
+                }
+
+                callback?.Invoke(this);
+            }
+
+            StartCoroutine(InstatiateTileBatchesAsync());
+        }
+        #endregion
 
         protected Tile InitTile(Tileset.Tile tilesetTile, int x, int y, int sortingOrder)
         {

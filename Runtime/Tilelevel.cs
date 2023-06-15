@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -37,9 +38,24 @@ namespace VED.Tilemaps
             return this;
         }
 
+        public void InitAsync(Level definition, int tileBatchSize, int entityBatchSize, Action<TileLevel> callback)
+        {
+            _id = definition.Iid;
+            _size = new Vector2(definition.PxWid / Consts.TILE_SIZE, definition.PxHei / Consts.TILE_SIZE);
+
+            InitTileLayersAsync(definition, tileBatchSize, () =>
+            {
+                InitEntityLayersAsync(definition, entityBatchSize, () =>
+                {
+                    callback?.Invoke(this);
+                });
+            });
+        }
 
         protected virtual void InitTileLayers(Level definition)
         {
+            _tileLayers = new Dictionary<string, TileLayer>();
+
             // find all layers which are not entity layers
             List<LayerInstance> layerDefinitions = new List<LayerInstance>();
             for (int i = 0; i < definition.LayerInstances.Count; i++)
@@ -51,8 +67,6 @@ namespace VED.Tilemaps
                 }
             }
 
-            _tileLayers = new Dictionary<string, TileLayer>();
-
             for (int i = 0; i < layerDefinitions.Count; i++)
             {
                 GameObject gameObject = new GameObject("TileLayer: " + layerDefinitions[i].Identifier);
@@ -60,6 +74,52 @@ namespace VED.Tilemaps
                 gameObject.transform.localPosition = Vector3.zero;
 
                 _tileLayers.Add(layerDefinitions[i].Iid, gameObject.AddComponent<TileLayer>().Init(layerDefinitions[i], -i));
+            }
+        }
+
+        protected virtual void InitTileLayersAsync(Level definition, int batchSize, Action callback)
+        {
+            _tileLayers = new Dictionary<string, TileLayer>();
+
+            // find all layers which are not entity layers
+            List<LayerInstance> layerDefinitions = new List<LayerInstance>();
+            for (int i = 0; i < definition.LayerInstances.Count; i++)
+            {
+                if (definition.LayerInstances[i].Type != Consts.ENTITYLAYER_TYPE)
+                {
+                    layerDefinitions.Add(definition.LayerInstances[i]);
+                }
+            }
+
+            int count = layerDefinitions.Count;
+            if (count <= 0)
+            {
+                callback?.Invoke();
+                return;
+            }
+
+            for (int i = 0; i < layerDefinitions.Count; i++)
+            {
+                int index = i;
+
+                GameObject gameObject = new GameObject("TileLayer: " + layerDefinitions[i].Identifier);
+                gameObject.transform.SetParent(transform);
+                gameObject.transform.localPosition = Vector3.zero;
+
+                gameObject.AddComponent<TileLayer>().InitAsync(layerDefinitions[i], -index, batchSize, (TileLayer tileLayer) =>
+                {
+                    _tileLayers.Add(layerDefinitions[index].Iid, tileLayer);
+                    Join();
+                });
+            }
+
+            void Join()
+            {
+                if (count <= 0) return;
+                count--;
+                if (count > 0) return;
+
+                callback?.Invoke();
             }
         }
 
@@ -84,6 +144,52 @@ namespace VED.Tilemaps
                 gameObject.transform.localPosition = Vector3.zero;
 
                 _entityLayers.Add(layerDefinitions[i].Iid, gameObject.AddComponent<EntityLayer>().Init(layerDefinitions[i], definition.Iid));
+            }
+        }
+
+        protected virtual void InitEntityLayersAsync(Level definition, int batchSize, Action callback)
+        {
+            _entityLayers = new Dictionary<string, EntityLayer>();
+
+            // find all layers which are entity layers
+            List<LayerInstance> layerDefinitions = new List<LayerInstance>();
+            for (int i = 0; i < definition.LayerInstances.Count; i++)
+            {
+                if (definition.LayerInstances[i].Type == Consts.ENTITYLAYER_TYPE)
+                {
+                    layerDefinitions.Add(definition.LayerInstances[i]);
+                }
+            }
+
+            int count = layerDefinitions.Count;
+            if (count <= 0)
+            {
+                callback?.Invoke();
+                return;
+            }
+
+            for (int i = 0; i < layerDefinitions.Count; i++)
+            {
+                int index = i;
+
+                GameObject gameObject = new GameObject("EntityLayer: " + layerDefinitions[i].Identifier);
+                gameObject.transform.SetParent(transform);
+                gameObject.transform.localPosition = Vector3.zero;
+
+                gameObject.AddComponent<EntityLayer>().InitAsync(layerDefinitions[i], definition.Iid, batchSize, (EntityLayer entityLayer) =>
+                {
+                    _entityLayers.Add(layerDefinitions[index].Iid, entityLayer);
+                    Join();
+                });
+            }
+
+            void Join()
+            {
+                if (count <= 0) return;
+                count--;
+                if (count > 0) return;
+
+                callback?.Invoke();
             }
         }
 
