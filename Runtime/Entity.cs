@@ -6,7 +6,7 @@ namespace VED.Tilemaps
     public class Entity : MonoBehaviour
     {
         [Serializable]
-        protected class Reference
+        public class Reference
         {
             [SerializeField] public string entityIid;
             [SerializeField] public string layerIid;
