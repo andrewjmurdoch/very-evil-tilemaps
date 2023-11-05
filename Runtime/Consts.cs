@@ -2,7 +2,6 @@ namespace VED.Tilemaps
 {
     public struct Consts
     {
-        public const int TILE_SIZE = 24;
         public const int NEARBY_TILE_RANGE = 2;
         public const string TILELAYER_TYPE = "Tiles";
         public const string AUTOLAYER_TYPE = "AutoLayer";

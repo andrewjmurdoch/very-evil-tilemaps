@@ -30,7 +30,7 @@ namespace VED.Tilemaps
         public TileLevel Init(Level definition)
         {
             _id = definition.Iid;
-            _size = new Vector2(definition.PxWid / Consts.TILE_SIZE, definition.PxHei / Consts.TILE_SIZE);
+            _size = new Vector2(definition.PxWid / TilesetManager.TileSize, definition.PxHei / TilesetManager.TileSize);
 
             InitTileLayers(definition);
             InitEntityLayers(definition);
@@ -41,7 +41,7 @@ namespace VED.Tilemaps
         public void InitAsync(Level definition, int tileBatchSize, int entityBatchSize, Action<TileLevel> callback)
         {
             _id = definition.Iid;
-            _size = new Vector2(definition.PxWid / Consts.TILE_SIZE, definition.PxHei / Consts.TILE_SIZE);
+            _size = new Vector2(definition.PxWid / TilesetManager.TileSize, definition.PxHei / TilesetManager.TileSize);
 
             InitTileLayersAsync(definition, tileBatchSize, () =>
             {

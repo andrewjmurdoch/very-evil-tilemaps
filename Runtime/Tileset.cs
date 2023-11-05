@@ -10,11 +10,11 @@ namespace VED.Tilemaps
 
         public virtual Tileset Init(TilesetDefinition definition)
         {
-            // get size of tileset
-            int size = (int)((definition.PxWid / Consts.TILE_SIZE) * (definition.PxHei / Consts.TILE_SIZE));
-            _tiles = new Tile[size];
-
             if (definition.RelPath == null) return null;
+
+            // get size of tileset
+            int size = (int)((definition.PxWid / TilesetManager.TileSize) * (definition.PxHei / TilesetManager.TileSize));
+            _tiles = new Tile[size];
 
             // get tileset
             int start = definition.RelPath.LastIndexOf('/') + 1;

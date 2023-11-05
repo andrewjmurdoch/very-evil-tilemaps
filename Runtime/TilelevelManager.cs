@@ -20,7 +20,7 @@ namespace VED.Tilemaps
             for (int i = 0; i < definitions.Count; i++)
             {
                 GameObject gameObject = new GameObject("TileLevel: " + definitions[i].Identifier);
-                gameObject.transform.localPosition = new Vector2(definitions[i].WorldX / Consts.TILE_SIZE, -definitions[i].WorldY / Consts.TILE_SIZE);
+                gameObject.transform.localPosition = new Vector2(definitions[i].WorldX / TilesetManager.TileSize, -definitions[i].WorldY / TilesetManager.TileSize);
 
                 _tileLevels.Add(definitions[i].Iid, gameObject.AddComponent<TileLevel>().Init(definitions[i]));
             }
@@ -49,7 +49,7 @@ namespace VED.Tilemaps
                 int index = i;
 
                 GameObject gameObject = new GameObject("TileLevel: " + definitions[i].Identifier);
-                gameObject.transform.localPosition = new Vector2(definitions[i].WorldX / Consts.TILE_SIZE, -definitions[i].WorldY / Consts.TILE_SIZE);
+                gameObject.transform.localPosition = new Vector2(definitions[i].WorldX / TilesetManager.TileSize, -definitions[i].WorldY / TilesetManager.TileSize);
 
                 gameObject.AddComponent<TileLevel>().InitAsync(definitions[i], tileBatchSize, entityBatchSize, (TileLevel tileLevel) =>
                 {

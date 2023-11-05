@@ -5,14 +5,20 @@ namespace VED.Tilemaps
 {
     public class TilesetManager : Singleton<TilesetManager>
     {
+        public static int TileSize => Instance.TilsetManagerSettings.TileSize;
+
+        public TilesetManagerSettings TilsetManagerSettings => _tilesetManagerSettings;
+        private TilesetManagerSettings _tilesetManagerSettings;
+
         public TilesetMapper TilesetMapper => _tilesetMapper;
         private TilesetMapper _tilesetMapper = null;
 
         public Dictionary<long, Tileset> Tilesets => _tilesets;
         private Dictionary<long, Tileset> _tilesets = new Dictionary<long, Tileset>();
 
-        public void Init(TilesetMapper tilesetMapper, List<TilesetDefinition> definitions)
+        public void Init(TilesetManagerSettings tilesetManagerSettings, TilesetMapper tilesetMapper, List<TilesetDefinition> definitions)
         {
+            _tilesetManagerSettings = tilesetManagerSettings;
             _tilesetMapper = tilesetMapper;
 
             _tilesets = new Dictionary<long, Tileset>();
@@ -25,5 +31,4 @@ namespace VED.Tilemaps
             }
         }
     }
-
 }

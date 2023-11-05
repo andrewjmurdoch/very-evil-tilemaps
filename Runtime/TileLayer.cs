@@ -45,8 +45,8 @@ namespace VED.Tilemaps
             {
                 Tileset.Tile tilesetTile = tileset.Tiles[definition.GridTiles[i].T];
 
-                int x = (int)definition.GridTiles[i].Px[0] / Consts.TILE_SIZE;
-                int y = (int)definition.GridTiles[i].Px[1] / Consts.TILE_SIZE;
+                int x = (int)definition.GridTiles[i].Px[0] / TilesetManager.TileSize;
+                int y = (int)definition.GridTiles[i].Px[1] / TilesetManager.TileSize;
 
                 InitTile(tilesetTile, x, y, sortingOrder);
             }
@@ -67,8 +67,8 @@ namespace VED.Tilemaps
             {
                 Tileset.Tile tilesetTile = tileset.Tiles[definition.AutoLayerTiles[i].T];
 
-                int x = (int)definition.AutoLayerTiles[i].Px[0] / Consts.TILE_SIZE;
-                int y = (int)definition.AutoLayerTiles[i].Px[1] / Consts.TILE_SIZE;
+                int x = (int)definition.AutoLayerTiles[i].Px[0] / TilesetManager.TileSize;
+                int y = (int)definition.AutoLayerTiles[i].Px[1] / TilesetManager.TileSize;
 
                 InitTile(tilesetTile, x, y, sortingOrder);
             }
@@ -89,8 +89,8 @@ namespace VED.Tilemaps
             {
                 Tileset.Tile tilesetTile = tileset.Tiles[definition.AutoLayerTiles[i].T];
 
-                int x = (int)definition.AutoLayerTiles[i].Px[0] / Consts.TILE_SIZE;
-                int y = (int)definition.AutoLayerTiles[i].Px[1] / Consts.TILE_SIZE;
+                int x = (int)definition.AutoLayerTiles[i].Px[0] / TilesetManager.TileSize;
+                int y = (int)definition.AutoLayerTiles[i].Px[1] / TilesetManager.TileSize;
 
                 InitTile(tilesetTile, x, y, sortingOrder);
             }
@@ -122,8 +122,8 @@ namespace VED.Tilemaps
             {
                 Tileset.Tile tilesetTile = tileset.Tiles[definition.GridTiles[index].T];
 
-                int x = (int)definition.GridTiles[index].Px[0] / Consts.TILE_SIZE;
-                int y = (int)definition.GridTiles[index].Px[1] / Consts.TILE_SIZE;
+                int x = (int)definition.GridTiles[index].Px[0] / TilesetManager.TileSize;
+                int y = (int)definition.GridTiles[index].Px[1] / TilesetManager.TileSize;
 
                 InitTile(tilesetTile, x, y, sortingOrder);
             }
@@ -167,8 +167,8 @@ namespace VED.Tilemaps
             {
                 Tileset.Tile tilesetTile = tileset.Tiles[definition.AutoLayerTiles[index].T];
 
-                int x = (int)definition.AutoLayerTiles[index].Px[0] / Consts.TILE_SIZE;
-                int y = (int)definition.AutoLayerTiles[index].Px[1] / Consts.TILE_SIZE;
+                int x = (int)definition.AutoLayerTiles[index].Px[0] / TilesetManager.TileSize;
+                int y = (int)definition.AutoLayerTiles[index].Px[1] / TilesetManager.TileSize;
 
                 InitTile(tilesetTile, x, y, sortingOrder);
             }
@@ -212,8 +212,8 @@ namespace VED.Tilemaps
             {
                 Tileset.Tile tilesetTile = tileset.Tiles[definition.AutoLayerTiles[index].T];
 
-                int x = (int)definition.AutoLayerTiles[index].Px[0] / Consts.TILE_SIZE;
-                int y = (int)definition.AutoLayerTiles[index].Px[1] / Consts.TILE_SIZE;
+                int x = (int)definition.AutoLayerTiles[index].Px[0] / TilesetManager.TileSize;
+                int y = (int)definition.AutoLayerTiles[index].Px[1] / TilesetManager.TileSize;
 
                 InitTile(tilesetTile, x, y, sortingOrder);
             }
