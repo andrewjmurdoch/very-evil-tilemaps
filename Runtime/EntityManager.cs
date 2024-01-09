@@ -38,8 +38,11 @@ namespace VED.Tilemaps
         {
             if (_tilelevelEntities.TryGetValue(entity.LevelID, out Dictionary<string, Entity> tilelevelEntities))
             {
-                tilelevelEntities.Add(entity.ID, entity);
-                _entities.Add(entity);
+                if (tilelevelEntities.TryAdd(entity.ID, entity))
+                {
+                    _entities.Add(entity);
+                    return;
+                }
                 return;
             }
 
