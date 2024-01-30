@@ -73,6 +73,18 @@ namespace VED.Tilemaps
         public List<LdtkCustomCommand> CustomCommands { get; set; }
 
         /// <summary>
+        /// Default height for new entities
+        /// </summary>
+        [JsonProperty("defaultEntityHeight")]
+        public long DefaultEntityHeight { get; set; }
+
+        /// <summary>
+        /// Default width for new entities
+        /// </summary>
+        [JsonProperty("defaultEntityWidth")]
+        public long DefaultEntityWidth { get; set; }
+
+        /// <summary>
         /// Default grid size for new layers
         /// </summary>
         [JsonProperty("defaultGridSize")]
@@ -153,8 +165,9 @@ namespace VED.Tilemaps
 
         /// <summary>
         /// An array containing various advanced flags (ie. options or other states). Possible
-        /// values: `DiscardPreCsvIntGrid`, `ExportPreCsvIntGridFormat`, `IgnoreBackupSuggest`,
-        /// `PrependIndexToLevelFileNames`, `MultiWorlds`, `UseMultilinesType`
+        /// values: `DiscardPreCsvIntGrid`, `ExportOldTableOfContentData`,
+        /// `ExportPreCsvIntGridFormat`, `IgnoreBackupSuggest`, `PrependIndexToLevelFileNames`,
+        /// `MultiWorlds`, `UseMultilinesType`
         /// </summary>
         [JsonProperty("flags")]
         public List<Flag> Flags { get; set; }
@@ -345,6 +358,12 @@ namespace VED.Tilemaps
     public partial class EntityDefinition
     {
         /// <summary>
+        /// If enabled, this entity is allowed to stay outside of the current level bounds
+        /// </summary>
+        [JsonProperty("allowOutOfBounds")]
+        public bool AllowOutOfBounds { get; set; }
+
+        /// <summary>
         /// Base entity color
         /// </summary>
         [JsonProperty("color")]
@@ -415,6 +434,30 @@ namespace VED.Tilemaps
         /// </summary>
         [JsonProperty("maxCount")]
         public long MaxCount { get; set; }
+
+        /// <summary>
+        /// Max pixel height (only applies if the entity is resizable on Y)
+        /// </summary>
+        [JsonProperty("maxHeight")]
+        public long? MaxHeight { get; set; }
+
+        /// <summary>
+        /// Max pixel width (only applies if the entity is resizable on X)
+        /// </summary>
+        [JsonProperty("maxWidth")]
+        public long? MaxWidth { get; set; }
+
+        /// <summary>
+        /// Min pixel height (only applies if the entity is resizable on Y)
+        /// </summary>
+        [JsonProperty("minHeight")]
+        public long? MinHeight { get; set; }
+
+        /// <summary>
+        /// Min pixel width (only applies if the entity is resizable on X)
+        /// </summary>
+        [JsonProperty("minWidth")]
+        public long? MinWidth { get; set; }
 
         /// <summary>
         /// An array of 4 dimensions for the up/right/down/left borders (in this order) when using
@@ -503,6 +546,12 @@ namespace VED.Tilemaps
         public long Uid { get; set; }
 
         /// <summary>
+        /// This tile overrides the one defined in `tileRect` in the UI
+        /// </summary>
+        [JsonProperty("uiTileRect")]
+        public TilesetRectangle UiTileRect { get; set; }
+
+        /// <summary>
         /// Pixel width
         /// </summary>
         [JsonProperty("width")]
@@ -588,6 +637,9 @@ namespace VED.Tilemaps
         [JsonProperty("editorCutLongValues")]
         public bool EditorCutLongValues { get; set; }
 
+        [JsonProperty("editorDisplayColor")]
+        public string EditorDisplayColor { get; set; }
+
         /// <summary>
         /// Possible values: `Hidden`, `ValueOnly`, `NameAndValue`, `EntityTile`, `LevelTile`,
         /// `Points`, `PointStar`, `PointPath`, `PointPathLoop`, `RadiusPx`, `RadiusGrid`,
@@ -622,6 +674,13 @@ namespace VED.Tilemaps
         public string EditorTextSuffix { get; set; }
 
         /// <summary>
+        /// If TRUE, the field value will be exported to the `toc` project JSON field. Only applies
+        /// to Entity fields.
+        /// </summary>
+        [JsonProperty("exportToToc")]
+        public bool ExportToToc { get; set; }
+
+        /// <summary>
         /// User defined unique identifier
         /// </summary>
         [JsonProperty("identifier")]
@@ -651,6 +710,12 @@ namespace VED.Tilemaps
         /// </summary>
         [JsonProperty("regex")]
         public string Regex { get; set; }
+
+        /// <summary>
+        /// If enabled, this field will be searchable through LDtk command palette
+        /// </summary>
+        [JsonProperty("searchable")]
+        public bool Searchable { get; set; }
 
         [JsonProperty("symmetricalRef")]
         public bool SymmetricalRef { get; set; }
@@ -771,8 +836,8 @@ namespace VED.Tilemaps
     public partial class EnumValueDefinition
     {
         /// <summary>
-        /// **WARNING**: this deprecated value will be *removed* completely on version 1.4.0+
-        /// Replaced by: `tileRect`
+        /// **WARNING**: this deprecated value is no longer exported since version 1.4.0  Replaced
+        /// by: `tileRect`
         /// </summary>
         [JsonProperty("__tileSrcRect")]
         public List<long> TileSrcRect { get; set; }
@@ -790,8 +855,8 @@ namespace VED.Tilemaps
         public string Id { get; set; }
 
         /// <summary>
-        /// **WARNING**: this deprecated value will be *removed* completely on version 1.4.0+
-        /// Replaced by: `tileRect`
+        /// **WARNING**: this deprecated value is no longer exported since version 1.4.0  Replaced
+        /// by: `tileRect`
         /// </summary>
         [JsonProperty("tileId")]
         public long? TileId { get; set; }
@@ -826,6 +891,12 @@ namespace VED.Tilemaps
         /// </summary>
         [JsonProperty("autoTilesetDefUid")]
         public long? AutoTilesetDefUid { get; set; }
+
+        [JsonProperty("autoTilesKilledByOtherLayerUid")]
+        public long? AutoTilesKilledByOtherLayerUid { get; set; }
+
+        [JsonProperty("biomeFieldUid")]
+        public long? BiomeFieldUid { get; set; }
 
         /// <summary>
         /// Allow editor selections when the layer is not currently active.
@@ -899,6 +970,12 @@ namespace VED.Tilemaps
         public List<IntGridValueDefinition> IntGridValues { get; set; }
 
         /// <summary>
+        /// Group informations for IntGrid values
+        /// </summary>
+        [JsonProperty("intGridValuesGroups")]
+        public List<IntGridValueGroupDefinition> IntGridValuesGroups { get; set; }
+
+        /// <summary>
         /// Parallax horizontal factor (from -1 to 1, defaults to 0) which affects the scrolling
         /// speed of this layer, creating a fake 3D (parallax) effect.
         /// </summary>
@@ -931,6 +1008,13 @@ namespace VED.Tilemaps
         /// </summary>
         [JsonProperty("pxOffsetY")]
         public long PxOffsetY { get; set; }
+
+        /// <summary>
+        /// If TRUE, the content of this layer will be used when rendering levels in a simplified way
+        /// for the world view
+        /// </summary>
+        [JsonProperty("renderInWorldView")]
+        public bool RenderInWorldView { get; set; }
 
         /// <summary>
         /// An array of tags to filter Entities that can be added to this layer
@@ -969,10 +1053,28 @@ namespace VED.Tilemaps
         public TypeEnum LayerDefinitionType { get; set; }
 
         /// <summary>
+        /// User defined color for the UI
+        /// </summary>
+        [JsonProperty("uiColor")]
+        public string UiColor { get; set; }
+
+        /// <summary>
         /// Unique Int identifier
         /// </summary>
         [JsonProperty("uid")]
         public long Uid { get; set; }
+
+        /// <summary>
+        /// Display tags
+        /// </summary>
+        [JsonProperty("uiFilterTags")]
+        public List<string> UiFilterTags { get; set; }
+
+        /// <summary>
+        /// Asynchronous rendering option for large/complex layers
+        /// </summary>
+        [JsonProperty("useAsyncRender")]
+        public bool UseAsyncRender { get; set; }
     }
 
     public partial class AutoLayerRuleGroup
@@ -980,17 +1082,29 @@ namespace VED.Tilemaps
         [JsonProperty("active")]
         public bool Active { get; set; }
 
+        [JsonProperty("biomeRequirementMode")]
+        public long BiomeRequirementMode { get; set; }
+
         /// <summary>
         /// *This field was removed in 1.0.0 and should no longer be used.*
         /// </summary>
         [JsonProperty("collapsed")]
         public bool? Collapsed { get; set; }
 
+        [JsonProperty("color")]
+        public string Color { get; set; }
+
+        [JsonProperty("icon")]
+        public TilesetRectangle Icon { get; set; }
+
         [JsonProperty("isOptional")]
         public bool IsOptional { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
+
+        [JsonProperty("requiredBiomeValues")]
+        public List<string> RequiredBiomeValues { get; set; }
 
         [JsonProperty("rules")]
         public List<AutoLayerRuleDefinition> Rules { get; set; }
@@ -1014,6 +1128,9 @@ namespace VED.Tilemaps
         /// </summary>
         [JsonProperty("active")]
         public bool Active { get; set; }
+
+        [JsonProperty("alpha")]
+        public double Alpha { get; set; }
 
         /// <summary>
         /// When TRUE, the rule will prevent other rules to be applied in the same cell if it matches
@@ -1045,6 +1162,12 @@ namespace VED.Tilemaps
         /// </summary>
         [JsonProperty("flipY")]
         public bool FlipY { get; set; }
+
+        /// <summary>
+        /// If TRUE, then the rule should be re-evaluated by the editor at one point
+        /// </summary>
+        [JsonProperty("invalidated")]
+        public bool Invalidated { get; set; }
 
         /// <summary>
         /// Default IntGrid value when checking cells outside of level bounds
@@ -1092,7 +1215,8 @@ namespace VED.Tilemaps
         public long Size { get; set; }
 
         /// <summary>
-        /// Array of all the tile IDs. They are used randomly or as stamps, based on `tileMode` value.
+        /// **WARNING**: this deprecated value is no longer exported since version 1.5.0  Replaced
+        /// by: `tileRectsIds`
         /// </summary>
         [JsonProperty("tileIds")]
         public List<long> TileIds { get; set; }
@@ -1126,6 +1250,12 @@ namespace VED.Tilemaps
         /// </summary>
         [JsonProperty("tileRandomYMin")]
         public long TileRandomYMin { get; set; }
+
+        /// <summary>
+        /// Array containing all the possible tile IDs rectangles (picked randomly).
+        /// </summary>
+        [JsonProperty("tileRectsIds")]
+        public List<List<long>> TileRectsIds { get; set; }
 
         /// <summary>
         /// Tile X offset
@@ -1179,16 +1309,49 @@ namespace VED.Tilemaps
         public string Color { get; set; }
 
         /// <summary>
+        /// Parent group identifier (0 if none)
+        /// </summary>
+        [JsonProperty("groupUid")]
+        public long GroupUid { get; set; }
+
+        /// <summary>
         /// User defined unique identifier
         /// </summary>
         [JsonProperty("identifier")]
         public string Identifier { get; set; }
+
+        [JsonProperty("tile")]
+        public TilesetRectangle Tile { get; set; }
 
         /// <summary>
         /// The IntGrid value itself
         /// </summary>
         [JsonProperty("value")]
         public long Value { get; set; }
+    }
+
+    /// <summary>
+    /// IntGrid value group definition
+    /// </summary>
+    public partial class IntGridValueGroupDefinition
+    {
+        /// <summary>
+        /// User defined color
+        /// </summary>
+        [JsonProperty("color")]
+        public string Color { get; set; }
+
+        /// <summary>
+        /// User defined string identifier
+        /// </summary>
+        [JsonProperty("identifier")]
+        public string Identifier { get; set; }
+
+        /// <summary>
+        /// Group unique ID
+        /// </summary>
+        [JsonProperty("uid")]
+        public long Uid { get; set; }
     }
 
     /// <summary>
@@ -1375,6 +1538,9 @@ namespace VED.Tilemaps
         [JsonProperty("IntGridValueDef", NullValueHandling = NullValueHandling.Ignore)]
         public IntGridValueDefinition IntGridValueDef { get; set; }
 
+        [JsonProperty("IntGridValueGroupDef", NullValueHandling = NullValueHandling.Ignore)]
+        public IntGridValueGroupDefinition IntGridValueGroupDef { get; set; }
+
         [JsonProperty("IntGridValueInstance", NullValueHandling = NullValueHandling.Ignore)]
         public IntGridValueInstance IntGridValueInstance { get; set; }
 
@@ -1407,6 +1573,9 @@ namespace VED.Tilemaps
 
         [JsonProperty("TilesetRect", NullValueHandling = NullValueHandling.Ignore)]
         public TilesetRectangle TilesetRect { get; set; }
+
+        [JsonProperty("TocInstanceData", NullValueHandling = NullValueHandling.Ignore)]
+        public LdtkTocInstanceData TocInstanceData { get; set; }
 
         [JsonProperty("World", NullValueHandling = NullValueHandling.Ignore)]
         public World World { get; set; }
@@ -1451,6 +1620,18 @@ namespace VED.Tilemaps
         /// </summary>
         [JsonProperty("__tile")]
         public TilesetRectangle Tile { get; set; }
+
+        /// <summary>
+        /// X world coordinate in pixels. Only available in GridVania or Free world layouts.
+        /// </summary>
+        [JsonProperty("__worldX")]
+        public long? WorldX { get; set; }
+
+        /// <summary>
+        /// Y world coordinate in pixels Only available in GridVania or Free world layouts.
+        /// </summary>
+        [JsonProperty("__worldY")]
+        public long? WorldY { get; set; }
 
         /// <summary>
         /// Reference of the **Entity definition** UID
@@ -1544,6 +1725,8 @@ namespace VED.Tilemaps
 
     /// <summary>
     /// This object describes the "location" of an Entity instance in the project worlds.
+    ///
+    /// IID information of this instance
     /// </summary>
     public partial class ReferenceToAnEntityInstance
     {
@@ -1767,6 +1950,12 @@ namespace VED.Tilemaps
     public partial class TileInstance
     {
         /// <summary>
+        /// Alpha/opacity of the tile (0-1, defaults to 1)
+        /// </summary>
+        [JsonProperty("a")]
+        public double A { get; set; }
+
+        /// <summary>
         /// Internal data used by the editor.<br/>  For auto-layer tiles: `[ruleId, coordId]`.<br/>
         /// For tile-layer tiles: `[coordId]`.
         /// </summary>
@@ -1827,9 +2016,10 @@ namespace VED.Tilemaps
         public LevelBackgroundPosition BgPos { get; set; }
 
         /// <summary>
-        /// An array listing all other levels touching this one on the world map.<br/>  Only relevant
-        /// for world layouts where level spatial positioning is manual (ie. GridVania, Free). For
-        /// Horizontal and Vertical layouts, this array is always empty.
+        /// An array listing all other levels touching this one on the world map. Since 1.4.0, this
+        /// includes levels that overlap in the same world layer, or in nearby world layers.<br/>
+        /// Only relevant for world layouts where level spatial positioning is manual (ie. GridVania,
+        /// Free). For Horizontal and Vertical layouts, this array is always empty.
         /// </summary>
         [JsonProperty("__neighbours")]
         public List<NeighbourLevel> Neighbours { get; set; }
@@ -1992,8 +2182,11 @@ namespace VED.Tilemaps
     public partial class NeighbourLevel
     {
         /// <summary>
-        /// A single lowercase character tipping on the level location (`n`orth, `s`outh, `w`est,
-        /// `e`ast).
+        /// A lowercase string tipping on the level location (`n`orth, `s`outh, `w`est,
+        /// `e`ast).<br/>  Since 1.4.0, this value can also be `<` (neighbour depth is lower), `>`
+        /// (neighbour depth is greater) or `o` (levels overlap and share the same world
+        /// depth).<br/>  Since 1.5.3, this value can also be `nw`,`ne`,`sw` or `se` for levels only
+        /// touching corners.
         /// </summary>
         [JsonProperty("dir")]
         public string Dir { get; set; }
@@ -2017,8 +2210,43 @@ namespace VED.Tilemaps
         [JsonProperty("identifier")]
         public string Identifier { get; set; }
 
-        [JsonProperty("instances")]
+        /// <summary>
+        /// **WARNING**: this deprecated value will be *removed* completely on version 1.7.0+
+        /// Replaced by: `instancesData`
+        /// </summary>
+        [JsonProperty("instances", NullValueHandling = NullValueHandling.Ignore)]
         public List<ReferenceToAnEntityInstance> Instances { get; set; }
+
+        [JsonProperty("instancesData")]
+        public List<LdtkTocInstanceData> InstancesData { get; set; }
+    }
+
+    public partial class LdtkTocInstanceData
+    {
+        /// <summary>
+        /// An object containing the values of all entity fields with the `exportToToc` option
+        /// enabled. This object typing depends on actual field value types.
+        /// </summary>
+        [JsonProperty("fields")]
+        public object Fields { get; set; }
+
+        [JsonProperty("heiPx")]
+        public long HeiPx { get; set; }
+
+        /// <summary>
+        /// IID information of this instance
+        /// </summary>
+        [JsonProperty("iids")]
+        public ReferenceToAnEntityInstance Iids { get; set; }
+
+        [JsonProperty("widPx")]
+        public long WidPx { get; set; }
+
+        [JsonProperty("worldX")]
+        public long WorldX { get; set; }
+
+        [JsonProperty("worldY")]
+        public long WorldY { get; set; }
     }
 
     /// <summary>
@@ -2151,7 +2379,7 @@ namespace VED.Tilemaps
 
     public enum EmbedAtlas { LdtkIcons };
 
-    public enum Flag { DiscardPreCsvIntGrid, ExportPreCsvIntGridFormat, IgnoreBackupSuggest, MultiWorlds, PrependIndexToLevelFileNames, UseMultilinesType };
+    public enum Flag { DiscardPreCsvIntGrid, ExportOldTableOfContentData, ExportPreCsvIntGridFormat, IgnoreBackupSuggest, MultiWorlds, PrependIndexToLevelFileNames, UseMultilinesType };
 
     public enum BgPos { Contain, Cover, CoverDirty, Repeat, Unscaled };
 
@@ -3102,6 +3330,8 @@ namespace VED.Tilemaps
             {
                 case "DiscardPreCsvIntGrid":
                     return Flag.DiscardPreCsvIntGrid;
+                case "ExportOldTableOfContentData":
+                    return Flag.ExportOldTableOfContentData;
                 case "ExportPreCsvIntGridFormat":
                     return Flag.ExportPreCsvIntGridFormat;
                 case "IgnoreBackupSuggest":
@@ -3128,6 +3358,9 @@ namespace VED.Tilemaps
             {
                 case Flag.DiscardPreCsvIntGrid:
                     serializer.Serialize(writer, "DiscardPreCsvIntGrid");
+                    return;
+                case Flag.ExportOldTableOfContentData:
+                    serializer.Serialize(writer, "ExportOldTableOfContentData");
                     return;
                 case Flag.ExportPreCsvIntGridFormat:
                     serializer.Serialize(writer, "ExportPreCsvIntGridFormat");
