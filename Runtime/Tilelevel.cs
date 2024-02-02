@@ -210,8 +210,8 @@ namespace VED.Tilemaps
             {
                 if (!tilelevelManager.Tilelevels.ContainsKey(neighbourLevel.LevelIid)) continue;
 
-                if (tilelevelManager.Tilelevels[neighbourLevel.LevelIid] is TileLevel physicsTilelevel)
-                    _neighbourTileLevels[neighbourLevel.Dir[0]].Add(physicsTilelevel);
+                if (tilelevelManager.Tilelevels[neighbourLevel.LevelIid] is TileLevel tileLevel)
+                    _neighbourTileLevels[neighbourLevel.Dir[0]].Add(tileLevel);
             }
         }
     }
